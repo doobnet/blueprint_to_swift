@@ -11,6 +11,10 @@ module BlueprintToSwift
       def initialize(members)
         @members = members
       end
+
+      def ==(other)
+        members == other.members
+      end
     end
   end
 end
