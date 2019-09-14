@@ -7,6 +7,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.0)
+    awesome_print (2.0.0.pre2)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     coderay (1.1.2)
@@ -56,6 +57,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  awesome_print (~> 2.0.0.pre2)
   blueprint_to_swift!
   bundler (~> 2.1.a)
   pry (~> 0.12.2)

@@ -35,14 +35,21 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
   end
 
-  def new_object(*members)
+  def new_data_structure(object = new_object)
+    {
+      element: 'dataStructure',
+      content: object
+    }
+  end
+
+  def new_object(members = [new_member])
     {
       element: 'object',
       content: RubyArray.new(members)
     }
   end
 
-  def new_member(name, example, required = false)
+  def new_member(name = self.name, example = self.example, required = false)
     {
       element: 'member',
       attributes: { typeAttributes: required ? [:required] : [] },
@@ -50,9 +57,26 @@ describe BlueprintToSwift::DrafterJsonParser do
     }
   end
 
+  describe 'parse_data_structure' do
+    let(:data_structure) { new_data_structure }
+
+    let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
+
+    let(:result_member) do
+      BlueprintToSwift::Ast::Member.new(name, example, required)
+    end
+
+    def parse_data_structure
+      subject.send(:parse_data_structure, drafter(data_structure))
+    end
+
+    it 'parses an data structure' do
+      expect(parse_data_structure).to eq(result)
+    end
+  end
+
   describe 'parse_object' do
-    let(:member) { new_member(name, example, required) }
-    let(:object) { new_object(member) }
+    let(:object) { new_object }
 
     let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
 

@@ -2,8 +2,13 @@
 
 require 'bundler/setup'
 
+require 'awesome_print'
 require 'pry'
+require 'pry-rescue/rspec'
+
 require 'blueprint_to_swift'
+
+AwesomePrint.pry!
 
 Dir[File.join(BlueprintToSwift.root, 'spec/support/**/*.rb')].each { require @1 }
 
