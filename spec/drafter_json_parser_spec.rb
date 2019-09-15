@@ -16,6 +16,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   Ast = BlueprintToSwift::Ast
 
   let(:name) { 'username' }
+  let(:type) { 'string' }
   let(:example) { 'user1' }
   let(:optional) { false }
 
@@ -25,12 +26,16 @@ describe BlueprintToSwift::DrafterJsonParser do
         OpenStruct.new(element: 'array', content: value.map(&self.:drafter))
       when Hash
         OpenStruct.new(value.transform_values(&self.:drafter))
+      when Numeric
+        OpenStruct.new(element: 'number', content: value)
       when RubyArray
         value.array.map(&self.:drafter)
       when String
         OpenStruct.new(element: 'string', content: value)
       when Symbol
         drafter(value.to_s)
+      else
+        raise "Unhandled type: #{value.class}"
     end
   end
 
@@ -72,7 +77,7 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
 
     let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(name, example, optional)
+      BlueprintToSwift::Ast::Member.new(name, type, example, optional)
     end
 
     def parse_data_structure
@@ -90,7 +95,7 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
 
     let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(name, example, optional)
+      BlueprintToSwift::Ast::Member.new(name, type, example, optional)
     end
 
     def parse_object
@@ -105,7 +110,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   describe 'parse_object_member' do
     let(:description) { nil }
     let(:member) { new_member(description: description) }
-    let(:result) { Ast::Member.new(name, example, optional, nil) }
+    let(:result) { Ast::Member.new(name, type, example, optional, nil) }
 
     def parse_object_member
       subject.send(:parse_object_member, drafter(member))
@@ -138,6 +143,15 @@ describe BlueprintToSwift::DrafterJsonParser do
 
       it 'returns a Member where "description" has been set' do
         expect(parse_object_member.description).to eq(description)
+      end
+    end
+
+    context 'when the type is a number' do
+      let(:type) { 'number' }
+      let(:example) { 60 }
+
+      it 'returns a Member where "type" is `number`' do
+        expect(parse_object_member.type).to eq(type)
       end
     end
   end

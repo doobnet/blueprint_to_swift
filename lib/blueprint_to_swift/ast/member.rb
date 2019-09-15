@@ -4,17 +4,20 @@ module BlueprintToSwift
   module Ast
     class Member
       attr_reader :name
+      attr_reader :type
       attr_reader :example
       attr_reader :description
 
       # Initializes the receiver with the given arguments.
       #
       # @param title [String] the name of the member
+      # @param type [String] the type of the member
       # @param resource [String] an example value
       # @param optional [Boolean] specifies if the member is optional
       # @param description [String] the description of the member
-      def initialize(name, example, optional, description = nil)
+      def initialize(name, type, example, optional, description = nil)
         @name = name
+        @type = type
         @example = example
         @optional = optional
         @description = description
@@ -31,6 +34,7 @@ module BlueprintToSwift
       def deconstruct_keys(keys)
         hash = {
           name: name,
+          type: type,
           example: example,
           optional: optional?,
           description: description
