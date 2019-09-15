@@ -107,8 +107,9 @@ module BlueprintToSwift
 
       name = member.content.key.content
       example = member.content.value.content
+      description = member.meta&.description&.content
 
-      Ast::Member.new(name, example, is_optional)
+      Ast::Member.new(name, example, is_optional, description)
     end
 
     # @return [String] the title of the given element

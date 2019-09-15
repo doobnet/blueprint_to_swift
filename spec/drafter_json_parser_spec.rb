@@ -18,7 +18,6 @@ describe BlueprintToSwift::DrafterJsonParser do
   let(:name) { 'username' }
   let(:example) { 'user1' }
   let(:optional) { false }
-  let(:member) { new_member(name, example, optional) }
 
   def drafter(value)
     case value
@@ -49,12 +48,22 @@ describe BlueprintToSwift::DrafterJsonParser do
     }
   end
 
-  def new_member(name = self.name, example = self.example, optional = false)
-    {
+  def new_member(
+    name: self.name,
+    example: self.example,
+    optional: self.optional,
+    description: nil
+  )
+    member = {
       element: 'member',
       attributes: { typeAttributes: optional ? [:optional] : [:required] },
       content: { key: name, value: example }
     }
+
+    return member unless description
+
+    member[:meta] = { description: description }
+    member
   end
 
   describe 'parse_data_structure' do
@@ -94,7 +103,9 @@ describe BlueprintToSwift::DrafterJsonParser do
   end
 
   describe 'parse_object_member' do
-    let(:result) { Ast::Member.new(name, example, optional) }
+    let(:description) { nil }
+    let(:member) { new_member(description: description) }
+    let(:result) { Ast::Member.new(name, example, optional, nil) }
 
     def parse_object_member
       subject.send(:parse_object_member, drafter(member))
@@ -119,6 +130,14 @@ describe BlueprintToSwift::DrafterJsonParser do
 
       it 'returns a Member where "optional?" is `true`' do
         expect(parse_object_member.optional?).to be true
+      end
+    end
+
+    context 'when the member has a description' do
+      let(:description) { 'foobar' }
+
+      it 'returns a Member where "description" has been set' do
+        expect(parse_object_member.description).to eq(description)
       end
     end
   end
