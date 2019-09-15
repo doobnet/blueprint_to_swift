@@ -71,13 +71,22 @@ describe BlueprintToSwift::DrafterJsonParser do
     member
   end
 
+  it 'fooas' do
+    subject.parse(data('full.json'))
+  end
+
   describe 'parse_data_structure' do
     let(:data_structure) { new_data_structure }
 
     let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
 
     let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(name, type, example, optional)
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
     end
 
     def parse_data_structure
@@ -95,7 +104,12 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
 
     let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(name, type, example, optional)
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
     end
 
     def parse_object
@@ -110,7 +124,16 @@ describe BlueprintToSwift::DrafterJsonParser do
   describe 'parse_object_member' do
     let(:description) { nil }
     let(:member) { new_member(description: description) }
-    let(:result) { Ast::Member.new(name, type, example, optional, nil) }
+
+    let(:result) do
+      Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional,
+        description: description
+      )
+    end
 
     def parse_object_member
       subject.send(:parse_object_member, drafter(member))

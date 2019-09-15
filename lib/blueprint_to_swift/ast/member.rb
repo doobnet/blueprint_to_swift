@@ -15,7 +15,7 @@ module BlueprintToSwift
       # @param resource [String] an example value
       # @param optional [Boolean] specifies if the member is optional
       # @param description [String] the description of the member
-      def initialize(name, type, example, optional, description = nil)
+      def initialize(name:, type:, example:, optional:, description: nil)
         @name = name
         @type = type
         @example = example
