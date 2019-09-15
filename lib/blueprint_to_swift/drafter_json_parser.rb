@@ -99,16 +99,16 @@ module BlueprintToSwift
     end
 
     def parse_object_member(member)
-      is_required = member
+      is_optional = member
         .attributes
         .typeAttributes
         .content
-        .any? { @1.content == 'required' }
+        .any? { @1.content == 'optional' }
 
       name = member.content.key.content
       example = member.content.value.content
 
-      Ast::Member.new(name, example, is_required)
+      Ast::Member.new(name, example, is_optional)
     end
 
     # @return [String] the title of the given element

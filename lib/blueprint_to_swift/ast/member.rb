@@ -10,15 +10,15 @@ module BlueprintToSwift
       #
       # @param title [String] the name of the member
       # @param resource [String] an example value
-      # @param required [Boolean] specifies if the member is required or not
-      def initialize(name, example, required)
+      # @param optional [Boolean] specifies if the member is optional
+      def initialize(name, example, optional)
         @name = name
         @example = example
-        @required = required
+        @optional = optional
       end
 
-      def required?
-        @required
+      def optional?
+        @optional
       end
 
       def deconstruct
@@ -26,7 +26,7 @@ module BlueprintToSwift
       end
 
       def deconstruct_keys(keys)
-        hash = { name: name, example: example, required: required? }
+        hash = { name: name, example: example, optional: optional? }
         keys ? hash.slice(*keys) : hash
       end
 

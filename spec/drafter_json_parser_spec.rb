@@ -17,8 +17,8 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   let(:name) { 'username' }
   let(:example) { 'user1' }
-  let(:required) { false }
-  let(:member) { new_member(name, example, required) }
+  let(:optional) { false }
+  let(:member) { new_member(name, example, optional) }
 
   def drafter(value)
     case value
@@ -49,10 +49,10 @@ describe BlueprintToSwift::DrafterJsonParser do
     }
   end
 
-  def new_member(name = self.name, example = self.example, required = false)
+  def new_member(name = self.name, example = self.example, optional = false)
     {
       element: 'member',
-      attributes: { typeAttributes: required ? [:required] : [] },
+      attributes: { typeAttributes: optional ? [:optional] : [:required] },
       content: { key: name, value: example }
     }
   end
@@ -63,7 +63,7 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
 
     let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(name, example, required)
+      BlueprintToSwift::Ast::Member.new(name, example, optional)
     end
 
     def parse_data_structure
@@ -81,7 +81,7 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
 
     let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(name, example, required)
+      BlueprintToSwift::Ast::Member.new(name, example, optional)
     end
 
     def parse_object
@@ -94,7 +94,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   end
 
   describe 'parse_object_member' do
-    let(:result) { Ast::Member.new(name, example, required) }
+    let(:result) { Ast::Member.new(name, example, optional) }
 
     def parse_object_member
       subject.send(:parse_object_member, drafter(member))
@@ -105,20 +105,20 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
 
     context 'when the member is required' do
-      let(:required) { true }
+      let(:optional) { false }
       let(:type_attributes) { [:required] }
 
-      it 'returns a Member where "required?" is `true`' do
-        expect(parse_object_member.required?).to be true
+      it 'returns a Member where "required?" is `false`' do
+        expect(parse_object_member.optional?).to be false
       end
     end
 
     context 'when the member is optional' do
-      let(:required) { false }
-      let(:type_attributes) { [] }
+      let(:optional) { true }
+      let(:type_attributes) { [:optional] }
 
-      it 'returns a Member where "required?" is `false`' do
-        expect(parse_object_member.required?).to be false
+      it 'returns a Member where "optional?" is `true`' do
+        expect(parse_object_member.optional?).to be true
       end
     end
   end
