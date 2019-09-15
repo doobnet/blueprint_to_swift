@@ -7,6 +7,7 @@ module BlueprintToSwift
       attr_reader :type
       attr_reader :example
       attr_reader :description
+      attr_reader :default_value
 
       # Initializes the receiver with the given arguments.
       #
@@ -15,12 +16,15 @@ module BlueprintToSwift
       # @param resource [String] an example value
       # @param optional [Boolean] specifies if the member is optional
       # @param description [String] the description of the member
-      def initialize(name:, type:, example:, optional:, description: nil)
+      # @param default_value [Object] the default value, or `nil` if none
+      def initialize(name:, type:, example:, optional:, description: nil,
+        default_value: nil)
         @name = name
         @type = type
         @example = example
         @optional = optional
         @description = description
+        @default_value = default_value
       end
 
       def optional?
@@ -37,7 +41,8 @@ module BlueprintToSwift
           type: type,
           example: example,
           optional: optional?,
-          description: description
+          description: description,
+          default_value: default_value
         }
 
         keys ? hash.slice(*keys) : hash

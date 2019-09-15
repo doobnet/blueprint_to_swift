@@ -98,7 +98,7 @@ module BlueprintToSwift
       Ast::Object.new(members)
     end
 
-    def parse_object_member(member);binding.pry
+    def parse_object_member(member)
       is_optional = member
         .attributes
         .typeAttributes
@@ -109,13 +109,15 @@ module BlueprintToSwift
       type = member.content.value.element
       example = member.content.value.content
       description = member.meta&.description&.content
+      default_value = member.content.value.attributes&.default&.content
 
       Ast::Member.new(
         name: name,
         type: type,
         example: example,
         optional: is_optional,
-        description: description
+        description: description,
+        default_value: default_value
       )
     end
 

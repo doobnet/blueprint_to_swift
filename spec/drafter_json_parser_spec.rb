@@ -20,18 +20,26 @@ describe BlueprintToSwift::DrafterJsonParser do
   let(:example) { 'user1' }
   let(:optional) { false }
 
+  def value_to_type(value)
+    case value
+      when String then 'string'
+      when Numeric then 'number'
+      else
+        raise "Unhandled type: #{value.class}"
+    end
+  end
+
+
   def drafter(value)
     case value
       when Array
         OpenStruct.new(element: 'array', content: value.map(&self.:drafter))
       when Hash
         OpenStruct.new(value.transform_values(&self.:drafter))
-      when Numeric
-        OpenStruct.new(element: 'number', content: value)
+      when Numeric, String
+        OpenStruct.new(element: value_to_type(value), content: value)
       when RubyArray
         value.array.map(&self.:drafter)
-      when String
-        OpenStruct.new(element: 'string', content: value)
       when Symbol
         drafter(value.to_s)
       else
@@ -57,7 +65,8 @@ describe BlueprintToSwift::DrafterJsonParser do
     name: self.name,
     example: self.example,
     optional: self.optional,
-    description: nil
+    description: nil,
+    default_value: nil
   )
     member = {
       element: 'member',
@@ -65,14 +74,17 @@ describe BlueprintToSwift::DrafterJsonParser do
       content: { key: name, value: example }
     }
 
-    return member unless description
+    member[:meta] = { description: description } if description
 
-    member[:meta] = { description: description }
+    if default_value
+      member[:content][:value] = {
+        element: value_to_type(example),
+        attributes: { default: default_value },
+        content: example
+      }
+    end
+
     member
-  end
-
-  it 'fooas' do
-    subject.parse(data('full.json'))
   end
 
   describe 'parse_data_structure' do
@@ -123,7 +135,11 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_object_member' do
     let(:description) { nil }
-    let(:member) { new_member(description: description) }
+    let(:default_value) { nil }
+
+    let(:member) do
+      new_member(description: description, default_value: default_value)
+    end
 
     let(:result) do
       Ast::Member.new(
@@ -175,6 +191,14 @@ describe BlueprintToSwift::DrafterJsonParser do
 
       it 'returns a Member where "type" is `number`' do
         expect(parse_object_member.type).to eq(type)
+      end
+    end
+
+    context 'when the member has a default value' do
+      let(:default_value) { 'asd' }
+
+      it 'returns a Member where "default_value" is `asd`' do
+        expect(parse_object_member.default_value).to eq(default_value)
       end
     end
   end
