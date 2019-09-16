@@ -81,9 +81,11 @@ module BlueprintToSwift
     def parse_request(request)
       raise ArgumentError, 'the given request is nil' unless request
 
-      http_method = request.attributes['method'].content
+      method = request.attributes['method'].content
       data_structure = request.content.find { @1.element == 'dataStructure' }
       parameters = parse_data_structure(data_structure)
+
+      Ast::Request.new(method, parameters)
     end
 
     def parse_response(response)
@@ -94,8 +96,7 @@ module BlueprintToSwift
     end
 
     def parse_object(object)
-      members = object.content.map(&self.:parse_object_member)
-      Ast::Object.new(members)
+      object.content.map(&self.:parse_object_member)
     end
 
     def parse_object_member(member)

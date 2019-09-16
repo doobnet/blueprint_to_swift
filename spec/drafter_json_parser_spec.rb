@@ -8,7 +8,19 @@ class RubyArray
   end
 
   def deconstruct
-    array
+    [array]
+  end
+end
+
+class RubyString
+  attr_reader :string
+
+  def initialize(string)
+    @string = string
+  end
+
+  def deconstruct
+    [string]
   end
 end
 
@@ -19,6 +31,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   let(:type) { 'string' }
   let(:example) { 'user1' }
   let(:optional) { false }
+  let(:method) { 'POST' }
 
   def value_to_type(value)
     case value
@@ -29,34 +42,58 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
   end
 
-
   def drafter(value)
     case value
-      when Array
+      in Array
         OpenStruct.new(element: 'array', content: value.map(&self.:drafter))
-      when Hash
+      in Hash
         OpenStruct.new(value.transform_values(&self.:drafter))
-      when Numeric, String
+      in Numeric | String
         OpenStruct.new(element: value_to_type(value), content: value)
-      when RubyArray
-        value.array.map(&self.:drafter)
-      when Symbol
+      in RubyArray(array)
+        array.map(&self.:drafter)
+      in RubyString(string)
+        string
+      in Symbol
         drafter(value.to_s)
       else
         raise "Unhandled type: #{value.class}"
     end
   end
 
+  def new_request(
+    method: self.method,
+    data_structure: new_data_structure
+  )
+    headers = {
+      element: RubyString.new('httpHeaders'),
+      content: RubyArray.new([
+        element: RubyString.new('member'),
+        content: {
+          key: 'Content-Type',
+          value: 'application/json'
+        }
+      ])
+    }
+
+    {
+      element: RubyString.new('httpRequest'),
+      attributes: { method: method },
+      headers: headers,
+      content: RubyArray.new([data_structure])
+    }
+  end
+
   def new_data_structure(object = new_object)
     {
-      element: 'dataStructure',
+      element: RubyString.new('dataStructure'),
       content: object
     }
   end
 
   def new_object(members = [new_member])
     {
-      element: 'object',
+      element: RubyString.new('object'),
       content: RubyArray.new(members)
     }
   end
@@ -87,10 +124,32 @@ describe BlueprintToSwift::DrafterJsonParser do
     member
   end
 
+  describe 'parse_request' do
+    let(:request) { new_request }
+    let(:result) { Ast::Request.new(method, [result_member]) }
+
+    let(:result_member) do
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
+    end
+
+    def parse_request
+      subject.send(:parse_request, drafter(request))
+    end
+
+    it 'parses a request' do
+      expect(parse_request).to eq(result)
+    end
+  end
+
   describe 'parse_data_structure' do
     let(:data_structure) { new_data_structure }
 
-    let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
+    let(:result) { [result_member] }
 
     let(:result_member) do
       BlueprintToSwift::Ast::Member.new(
@@ -113,7 +172,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   describe 'parse_object' do
     let(:object) { new_object }
 
-    let(:result) { BlueprintToSwift::Ast::Object.new([result_member]) }
+    let(:result) { [result_member] }
 
     let(:result_member) do
       BlueprintToSwift::Ast::Member.new(

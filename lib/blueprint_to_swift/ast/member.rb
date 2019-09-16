@@ -9,6 +9,8 @@ module BlueprintToSwift
       attr_reader :description
       attr_reader :default_value
 
+      # rubocop:disable Metrics/ParameterLists
+
       # Initializes the receiver with the given arguments.
       #
       # @param title [String] the name of the member
@@ -18,7 +20,7 @@ module BlueprintToSwift
       # @param description [String] the description of the member
       # @param default_value [Object] the default value, or `nil` if none
       def initialize(name:, type:, example:, optional:, description: nil,
-        default_value: nil)
+                     default_value: nil)
         @name = name
         @type = type
         @example = example
@@ -26,6 +28,8 @@ module BlueprintToSwift
         @description = description
         @default_value = default_value
       end
+
+      # rubocop:enable Metrics/ParameterLists
 
       def optional?
         @optional
