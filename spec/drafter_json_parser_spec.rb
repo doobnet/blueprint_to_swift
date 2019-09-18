@@ -62,6 +62,13 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
   end
 
+  def new_http_transaction(request: new_request, response: new_response)
+    {
+      element: RubyString.new('httpTransaction'),
+      content: RubyArray.new([request, response])
+    }
+  end
+
   def new_headers
     {
       element: RubyString.new('httpHeaders'),
@@ -137,6 +144,36 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
 
     member
+  end
+
+  describe 'parse_http_transaction' do
+    let(:documentation) { 'foobar asd' }
+    let(:http_transaction) { new_http_transaction }
+
+    let(:result) do
+      Ast::HttpTransaction.new(request, [response], documentation)
+    end
+
+    let(:request) { Ast::Request.new(method, [member]) }
+    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
+
+    let(:member) do
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
+    end
+
+    def parse_http_transaction
+      subject.send(:parse_http_transaction, drafter(http_transaction),
+        documentation)
+    end
+
+    it 'parses a http_transaction' do
+      expect(parse_http_transaction).to eq(result)
+    end
   end
 
   describe 'parse_response' do

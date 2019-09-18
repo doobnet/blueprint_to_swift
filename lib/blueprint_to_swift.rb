@@ -5,6 +5,7 @@ require 'optparse'
 
 require 'blueprint_to_swift/application'
 require 'blueprint_to_swift/ast/api'
+require 'blueprint_to_swift/ast/http_transaction'
 require 'blueprint_to_swift/ast/member'
 require 'blueprint_to_swift/ast/request'
 require 'blueprint_to_swift/ast/resource'

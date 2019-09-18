@@ -68,14 +68,13 @@ module BlueprintToSwift
 
     def parse_http_transaction(http_transaction, documentation)
       content = http_transaction.content
-
       request = parse_request(content.find { @1.element == 'httpRequest' })
 
       responses = content
         .filter { @1.element == 'httpResponse' }
         .map(&self.:parse_response)
 
-      # Ast::HttpTransaction.new(response, responses, documentation)
+      Ast::HttpTransaction.new(request, responses, documentation)
     end
 
     def parse_request(request)
