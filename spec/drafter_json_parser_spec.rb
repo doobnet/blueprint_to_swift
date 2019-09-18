@@ -27,6 +27,7 @@ end
 describe BlueprintToSwift::DrafterJsonParser do
   Ast = BlueprintToSwift::Ast
 
+  let(:status_code) { '200' }
   let(:name) { 'username' }
   let(:type) { 'string' }
   let(:example) { 'user1' }
@@ -61,11 +62,8 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
   end
 
-  def new_request(
-    method: self.method,
-    data_structure: new_data_structure
-  )
-    headers = {
+  def new_headers
+    {
       element: RubyString.new('httpHeaders'),
       content: RubyArray.new([
         element: RubyString.new('member'),
@@ -75,11 +73,28 @@ describe BlueprintToSwift::DrafterJsonParser do
         }
       ])
     }
+  end
 
+  def new_response(
+    status_code: self.status_code,
+    data_structure: new_data_structure
+  )
+    {
+      element: RubyString.new('httpResponse'),
+      attributes: { statusCode: status_code },
+      headers: new_headers,
+      content: RubyArray.new([data_structure])
+    }
+  end
+
+  def new_request(
+    method: self.method,
+    data_structure: new_data_structure
+  )
     {
       element: RubyString.new('httpRequest'),
       attributes: { method: method },
-      headers: headers,
+      headers: new_headers,
       content: RubyArray.new([data_structure])
     }
   end
@@ -122,6 +137,28 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
 
     member
+  end
+
+  describe 'parse_response' do
+    let(:response) { new_response }
+    let(:result) { Ast::Response.new(status_code.to_i, [result_member]) }
+
+    let(:result_member) do
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
+    end
+
+    def parse_response
+      subject.send(:parse_response, drafter(response))
+    end
+
+    it 'parses a response' do
+      expect(parse_response).to eq(result)
+    end
   end
 
   describe 'parse_request' do

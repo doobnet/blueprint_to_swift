@@ -89,6 +89,11 @@ module BlueprintToSwift
     end
 
     def parse_response(response)
+      status_code = response.attributes.statusCode.content.to_i
+      data_structure = response.content.find { @1.element == 'dataStructure' }
+      parameters = parse_data_structure(data_structure)
+
+      Ast::Response.new(status_code, parameters)
     end
 
     def parse_data_structure(data_structure)

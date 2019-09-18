@@ -9,6 +9,7 @@ require 'blueprint_to_swift/ast/member'
 require 'blueprint_to_swift/ast/request'
 require 'blueprint_to_swift/ast/resource'
 require 'blueprint_to_swift/ast/resource_group'
+require 'blueprint_to_swift/ast/response'
 require 'blueprint_to_swift/drafter_json_parser'
 require 'blueprint_to_swift/version'
 
