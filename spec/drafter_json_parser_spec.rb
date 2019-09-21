@@ -35,6 +35,11 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   Ast = BlueprintToSwift::Ast
 
+  let(:resource_title) { 'Authentication' }
+  let(:resource_path) { '/sessions/authorize' }
+  let(:transition_title) { 'Create session' }
+  let(:transition_documentation) { 'Create a new API session by providing' }
+
   let(:status_code) { '200' }
   let(:name) { 'username' }
   let(:type) { 'string' }
@@ -68,6 +73,33 @@ describe BlueprintToSwift::DrafterJsonParser do
       else
         raise "Unhandled type: #{value.class}"
     end
+  end
+
+  def new_resource(
+    title: resource_title,
+    path: resource_path,
+    transition_title: self.transition_title,
+    transition_documentation: self.transition_documentation,
+    http_transactions: [new_http_transaction]
+  )
+    {
+      element: ruby_string('resource'),
+      meta: { title: title },
+      attributes: { href: path },
+      content: ruby_array([
+        {
+          element: ruby_string('transition'),
+          meta: { title: transition_title },
+          content: ruby_array([
+            {
+              element: ruby_string('copy'),
+              content: ruby_string(transition_documentation)
+            },
+            *http_transactions
+          ])
+        }
+      ])
+    }
   end
 
   def new_http_transaction(request: new_request, response: new_response)
@@ -154,6 +186,38 @@ describe BlueprintToSwift::DrafterJsonParser do
     member
   end
 
+  describe 'parse_resource' do
+    let(:resource) { new_resource }
+
+    let(:result) do
+      Ast::Resource.new(resource_title, resource_path, [http_transaction])
+    end
+
+    let(:http_transaction) do
+      Ast::HttpTransaction.new(request, [response], transition_documentation)
+    end
+
+    let(:request) { Ast::Request.new(method, [member]) }
+    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
+
+    let(:member) do
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
+    end
+
+    def parse_resource
+      subject.send(:parse_resource, drafter(resource))
+    end
+
+    it 'parses a resource' do
+      expect(parse_resource).to eq(result)
+    end
+  end
+
   describe 'parse_http_transaction' do
     let(:documentation) { 'foobar asd' }
     let(:http_transaction) { new_http_transaction }
@@ -179,7 +243,7 @@ describe BlueprintToSwift::DrafterJsonParser do
         documentation)
     end
 
-    it 'parses a http_transaction' do
+    it 'parses an HTTP transaction' do
       expect(parse_http_transaction).to eq(result)
     end
   end

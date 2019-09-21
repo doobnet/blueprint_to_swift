@@ -48,7 +48,7 @@ module BlueprintToSwift
       http_transactions = resource
         .content
         .filter { @1.element == 'transition' }
-        .map(&self.:parse_transition)
+        .flat_map(&self.:parse_transition)
 
       Ast::Resource.new(title, path, http_transactions)
     end

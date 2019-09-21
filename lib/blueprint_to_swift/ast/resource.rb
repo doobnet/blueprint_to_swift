@@ -18,6 +18,24 @@ module BlueprintToSwift
         @path = path
         @http_transactions = http_transactions
       end
+
+      def deconstruct
+        deconstruct_keys(nil).values
+      end
+
+      def deconstruct_keys(keys)
+        hash = {
+          title: title,
+          path: path,
+          http_transactions: http_transactions
+        }
+
+        keys ? hash.slice(*keys) : hash
+      end
+
+      def ==(other)
+        deconstruct == other.deconstruct
+      end
     end
   end
 end
