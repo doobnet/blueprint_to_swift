@@ -1,30 +1,38 @@
 # frozen_string_literal: true
 
-class RubyArray
-  attr_reader :array
-
-  def initialize(array)
-    @array = array
-  end
-
-  def deconstruct
-    [array]
-  end
-end
-
-class RubyString
-  attr_reader :string
-
-  def initialize(string)
-    @string = string
-  end
-
-  def deconstruct
-    [string]
-  end
-end
-
 describe BlueprintToSwift::DrafterJsonParser do
+  class RubyArray
+    attr_reader :array
+
+    def initialize(array)
+      @array = array
+    end
+
+    def deconstruct
+      [array]
+    end
+  end
+
+  class RubyString
+    attr_reader :string
+
+    def initialize(string)
+      @string = string
+    end
+
+    def deconstruct
+      [string]
+    end
+  end
+
+  def ruby_array(array)
+    RubyArray.new(array)
+  end
+
+  def ruby_string(string)
+    RubyString.new(string)
+  end
+
   Ast = BlueprintToSwift::Ast
 
   let(:status_code) { '200' }
@@ -64,16 +72,16 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   def new_http_transaction(request: new_request, response: new_response)
     {
-      element: RubyString.new('httpTransaction'),
-      content: RubyArray.new([request, response])
+      element: ruby_string('httpTransaction'),
+      content: ruby_array([request, response])
     }
   end
 
   def new_headers
     {
-      element: RubyString.new('httpHeaders'),
-      content: RubyArray.new([
-        element: RubyString.new('member'),
+      element: ruby_string('httpHeaders'),
+      content: ruby_array([
+        element: ruby_string('member'),
         content: {
           key: 'Content-Type',
           value: 'application/json'
@@ -87,10 +95,10 @@ describe BlueprintToSwift::DrafterJsonParser do
     data_structure: new_data_structure
   )
     {
-      element: RubyString.new('httpResponse'),
+      element: ruby_string('httpResponse'),
       attributes: { statusCode: status_code },
       headers: new_headers,
-      content: RubyArray.new([data_structure])
+      content: ruby_array([data_structure])
     }
   end
 
@@ -99,24 +107,24 @@ describe BlueprintToSwift::DrafterJsonParser do
     data_structure: new_data_structure
   )
     {
-      element: RubyString.new('httpRequest'),
+      element: ruby_string('httpRequest'),
       attributes: { method: method },
       headers: new_headers,
-      content: RubyArray.new([data_structure])
+      content: ruby_array([data_structure])
     }
   end
 
   def new_data_structure(object = new_object)
     {
-      element: RubyString.new('dataStructure'),
+      element: ruby_string('dataStructure'),
       content: object
     }
   end
 
   def new_object(members = [new_member])
     {
-      element: RubyString.new('object'),
-      content: RubyArray.new(members)
+      element: ruby_string('object'),
+      content: ruby_array(members)
     }
   end
 
