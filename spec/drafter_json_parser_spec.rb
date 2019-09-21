@@ -221,6 +221,46 @@ describe BlueprintToSwift::DrafterJsonParser do
     member
   end
 
+  describe 'parse asd' do
+    let(:result) { [Ast::Api.new([resource_group])] }
+
+    let(:resource_group) do
+      Ast::ResourceGroup.new(
+        resource_group_title,
+        resource_group_description,
+        [resource]
+      )
+    end
+
+    let(:resource) do
+      Ast::Resource.new(resource_title, resource_path, [http_transaction])
+    end
+
+    let(:http_transaction) do
+      Ast::HttpTransaction.new(request, [response], transition_documentation)
+    end
+
+    let(:request) { Ast::Request.new(method, [member]) }
+    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
+
+    let(:member) do
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
+    end
+
+    def parse
+      subject.send(:parse, data('full.json'))
+    end
+
+    it 'parses APIs' do
+      expect(parse).to eq(result)
+    end
+  end
+
   describe 'parse_api' do
     let(:api) { new_api }
 

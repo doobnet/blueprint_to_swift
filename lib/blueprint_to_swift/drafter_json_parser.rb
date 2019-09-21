@@ -12,7 +12,7 @@ module BlueprintToSwift
     #
     # @param content [String] the JSON output of the Drafter tool
     #
-    # @return [Object] a structure representing
+    # @return [<Ast::Api>] a structure representing
     def parse(content)
       JSON
         .parse(content, object_class: OpenStruct)
