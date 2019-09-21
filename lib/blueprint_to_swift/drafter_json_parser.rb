@@ -38,7 +38,12 @@ module BlueprintToSwift
         .filter { @1.element == 'resource' }
         .map(&self.:parse_resource)
 
-      Ast::ResourceGroup.new(title(resource_group), resources)
+      description = resource_group
+        .content
+        .find { @1.element == 'copy' }
+        &.content
+
+      Ast::ResourceGroup.new(title(resource_group), description, resources)
     end
 
     def parse_resource(resource)

@@ -36,7 +36,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   Ast = BlueprintToSwift::Ast
 
   let(:resource_group_title) { 'Sessions' }
-  let(:resource_group_documentation) { 'Session API provides methods for' }
+  let(:resource_group_description) { 'Session API provides methods for' }
 
   let(:resource_title) { 'Authentication' }
   let(:resource_path) { '/sessions/authorize' }
@@ -80,7 +80,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   def new_resource_group(
     title: resource_group_title,
-    documentation: resource_group_documentation,
+    description: resource_group_description,
     resources: [new_resource]
   )
     {
@@ -92,7 +92,7 @@ describe BlueprintToSwift::DrafterJsonParser do
       content: ruby_array([
         {
           element: ruby_string('copy'),
-          content: ruby_string(documentation)
+          content: ruby_string(description)
         },
         *resources
       ])
@@ -213,7 +213,13 @@ describe BlueprintToSwift::DrafterJsonParser do
   describe 'parse_resource_group' do
     let(:resource_group) { new_resource_group }
 
-    let(:result) { Ast::ResourceGroup.new(resource_group_title, [resource]) }
+    let(:result) do
+      Ast::ResourceGroup.new(
+        resource_group_title,
+        resource_group_description,
+        [resource]
+      )
+    end
 
     let(:resource) do
       Ast::Resource.new(resource_title, resource_path, [http_transaction])
