@@ -78,6 +78,17 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
   end
 
+  def new_api(resource_groups = [new_resource_group])
+    {
+      element: ruby_string('category'),
+      meta: {
+        classes: [:api],
+        title: ''
+      },
+      content: ruby_array(resource_groups)
+    }
+  end
+
   def new_resource_group(
     title: resource_group_title,
     description: resource_group_description,
@@ -208,6 +219,48 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
 
     member
+  end
+
+  describe 'parse_api' do
+    let(:api) { new_api }
+
+    let(:result) { Ast::Api.new([resource_group]) }
+
+    let(:resource_group) do
+      Ast::ResourceGroup.new(
+        resource_group_title,
+        resource_group_description,
+        [resource]
+      )
+    end
+
+    let(:resource) do
+      Ast::Resource.new(resource_title, resource_path, [http_transaction])
+    end
+
+    let(:http_transaction) do
+      Ast::HttpTransaction.new(request, [response], transition_documentation)
+    end
+
+    let(:request) { Ast::Request.new(method, [member]) }
+    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
+
+    let(:member) do
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
+    end
+
+    def parse_api
+      subject.send(:parse_api, drafter(api))
+    end
+
+    it 'parses an API' do
+      expect(parse_api).to eq(result)
+    end
   end
 
   describe 'parse_resource_group' do
