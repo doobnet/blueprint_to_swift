@@ -50,6 +50,34 @@ describe BlueprintToSwift::DrafterJsonParser do
   let(:optional) { false }
   let(:method) { 'POST' }
 
+  let(:resource_group) do
+    Ast::ResourceGroup.new(
+      resource_group_title,
+      resource_group_description,
+      [resource]
+    )
+  end
+
+  let(:resource) do
+    Ast::Resource.new(resource_title, resource_path, [http_transaction])
+  end
+
+  let(:http_transaction) do
+    Ast::HttpTransaction.new(request, [response], transition_documentation)
+  end
+
+  let(:request) { Ast::Request.new(method, [member]) }
+  let(:response) { Ast::Response.new(status_code.to_i, [member]) }
+
+  let(:member) do
+    BlueprintToSwift::Ast::Member.new(
+      name: name,
+      type: type,
+      example: example,
+      optional: optional
+    )
+  end
+
   def value_to_type(value)
     case value
       when String then 'string'
@@ -221,36 +249,8 @@ describe BlueprintToSwift::DrafterJsonParser do
     member
   end
 
-  describe 'parse asd' do
+  describe 'parse' do
     let(:result) { [Ast::Api.new([resource_group])] }
-
-    let(:resource_group) do
-      Ast::ResourceGroup.new(
-        resource_group_title,
-        resource_group_description,
-        [resource]
-      )
-    end
-
-    let(:resource) do
-      Ast::Resource.new(resource_title, resource_path, [http_transaction])
-    end
-
-    let(:http_transaction) do
-      Ast::HttpTransaction.new(request, [response], transition_documentation)
-    end
-
-    let(:request) { Ast::Request.new(method, [member]) }
-    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
-
-    let(:member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
 
     def parse
       subject.send(:parse, data('full.json'))
@@ -265,34 +265,6 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:api) { new_api }
 
     let(:result) { Ast::Api.new([resource_group]) }
-
-    let(:resource_group) do
-      Ast::ResourceGroup.new(
-        resource_group_title,
-        resource_group_description,
-        [resource]
-      )
-    end
-
-    let(:resource) do
-      Ast::Resource.new(resource_title, resource_path, [http_transaction])
-    end
-
-    let(:http_transaction) do
-      Ast::HttpTransaction.new(request, [response], transition_documentation)
-    end
-
-    let(:request) { Ast::Request.new(method, [member]) }
-    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
-
-    let(:member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
 
     def parse_api
       subject.send(:parse_api, drafter(api))
@@ -314,26 +286,6 @@ describe BlueprintToSwift::DrafterJsonParser do
       )
     end
 
-    let(:resource) do
-      Ast::Resource.new(resource_title, resource_path, [http_transaction])
-    end
-
-    let(:http_transaction) do
-      Ast::HttpTransaction.new(request, [response], transition_documentation)
-    end
-
-    let(:request) { Ast::Request.new(method, [member]) }
-    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
-
-    let(:member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
-
     def parse_resource_group
       subject.send(:parse_resource_group, drafter(resource_group))
     end
@@ -348,22 +300,6 @@ describe BlueprintToSwift::DrafterJsonParser do
 
     let(:result) do
       Ast::Resource.new(resource_title, resource_path, [http_transaction])
-    end
-
-    let(:http_transaction) do
-      Ast::HttpTransaction.new(request, [response], transition_documentation)
-    end
-
-    let(:request) { Ast::Request.new(method, [member]) }
-    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
-
-    let(:member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
     end
 
     def parse_resource
@@ -383,18 +319,6 @@ describe BlueprintToSwift::DrafterJsonParser do
       Ast::HttpTransaction.new(request, [response], documentation)
     end
 
-    let(:request) { Ast::Request.new(method, [member]) }
-    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
-
-    let(:member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
-
     def parse_http_transaction
       subject.send(:parse_http_transaction, drafter(http_transaction),
         documentation)
@@ -407,16 +331,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_response' do
     let(:response) { new_response }
-    let(:result) { Ast::Response.new(status_code.to_i, [result_member]) }
-
-    let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
+    let(:result) { Ast::Response.new(status_code.to_i, [member]) }
 
     def parse_response
       subject.send(:parse_response, drafter(response))
@@ -429,16 +344,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_request' do
     let(:request) { new_request }
-    let(:result) { Ast::Request.new(method, [result_member]) }
-
-    let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
+    let(:result) { Ast::Request.new(method, [member]) }
 
     def parse_request
       subject.send(:parse_request, drafter(request))
@@ -451,17 +357,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_data_structure' do
     let(:data_structure) { new_data_structure }
-
-    let(:result) { [result_member] }
-
-    let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
+    let(:result) { [member] }
 
     def parse_data_structure
       subject.send(:parse_data_structure, drafter(data_structure))
@@ -474,17 +370,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_object' do
     let(:object) { new_object }
-
-    let(:result) { [result_member] }
-
-    let(:result_member) do
-      BlueprintToSwift::Ast::Member.new(
-        name: name,
-        type: type,
-        example: example,
-        optional: optional
-      )
-    end
+    let(:result) { [member] }
 
     def parse_object
       subject.send(:parse_object, drafter(object))
