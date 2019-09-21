@@ -35,6 +35,9 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   Ast = BlueprintToSwift::Ast
 
+  let(:resource_group_title) { 'Sessions' }
+  let(:resource_group_documentation) { 'Session API provides methods for' }
+
   let(:resource_title) { 'Authentication' }
   let(:resource_path) { '/sessions/authorize' }
   let(:transition_title) { 'Create session' }
@@ -73,6 +76,27 @@ describe BlueprintToSwift::DrafterJsonParser do
       else
         raise "Unhandled type: #{value.class}"
     end
+  end
+
+  def new_resource_group(
+    title: resource_group_title,
+    documentation: resource_group_documentation,
+    resources: [new_resource]
+  )
+    {
+      element: ruby_string('category'),
+      meta: {
+        classes: [:resourceGroup],
+        title: resource_group_title
+      },
+      content: ruby_array([
+        {
+          element: ruby_string('copy'),
+          content: ruby_string(documentation)
+        },
+        *resources
+      ])
+    }
   end
 
   def new_resource(
@@ -184,6 +208,40 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
 
     member
+  end
+
+  describe 'parse_resource_group' do
+    let(:resource_group) { new_resource_group }
+
+    let(:result) { Ast::ResourceGroup.new(resource_group_title, [resource]) }
+
+    let(:resource) do
+      Ast::Resource.new(resource_title, resource_path, [http_transaction])
+    end
+
+    let(:http_transaction) do
+      Ast::HttpTransaction.new(request, [response], transition_documentation)
+    end
+
+    let(:request) { Ast::Request.new(method, [member]) }
+    let(:response) { Ast::Response.new(status_code.to_i, [member]) }
+
+    let(:member) do
+      BlueprintToSwift::Ast::Member.new(
+        name: name,
+        type: type,
+        example: example,
+        optional: optional
+      )
+    end
+
+    def parse_resource_group
+      subject.send(:parse_resource_group, drafter(resource_group))
+    end
+
+    it 'parses a resource group' do
+      expect(parse_resource_group).to eq(result)
+    end
   end
 
   describe 'parse_resource' do
