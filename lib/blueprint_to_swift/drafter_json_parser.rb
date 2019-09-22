@@ -105,7 +105,7 @@ module BlueprintToSwift
     end
 
     def parse_object(object)
-      object.content.map(&self.:parse_object_member)
+      Ast::Object.new(object.content.map(&self.:parse_object_member))
     end
 
     def parse_object_member(member)

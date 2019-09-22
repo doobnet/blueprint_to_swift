@@ -66,8 +66,9 @@ describe BlueprintToSwift::DrafterJsonParser do
     Ast::HttpTransaction.new(request, [response], transition_documentation)
   end
 
-  let(:request) { Ast::Request.new(method, [member]) }
-  let(:response) { Ast::Response.new(status_code.to_i, [member]) }
+  let(:request) { Ast::Request.new(method, object) }
+  let(:response) { Ast::Response.new(status_code.to_i, object) }
+  let(:object) { Ast::Object.new([member]) }
 
   let(:member) do
     BlueprintToSwift::Ast::Member.new(
@@ -333,7 +334,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_response' do
     let(:response) { new_response }
-    let(:result) { Ast::Response.new(status_code.to_i, [member]) }
+    let(:result) { Ast::Response.new(status_code.to_i, object) }
 
     def parse_response
       subject.send(:parse_response, drafter(response))
@@ -346,7 +347,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_request' do
     let(:request) { new_request }
-    let(:result) { Ast::Request.new(method, [member]) }
+    let(:result) { Ast::Request.new(method, object) }
 
     def parse_request
       subject.send(:parse_request, drafter(request))
@@ -359,7 +360,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_data_structure' do
     let(:data_structure) { new_data_structure }
-    let(:result) { [member] }
+    let(:result) { Ast::Object.new([member]) }
 
     def parse_data_structure
       subject.send(:parse_data_structure, drafter(data_structure))
@@ -380,7 +381,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_object' do
     let(:object) { new_object }
-    let(:result) { [member] }
+    let(:result) { Ast::Object.new([member]) }
 
     def parse_object
       subject.send(:parse_object, drafter(object))

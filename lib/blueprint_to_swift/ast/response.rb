@@ -2,20 +2,17 @@
 
 module BlueprintToSwift
   module Ast
-    class HttpTransaction
-      attr_reader :request
-      attr_reader :responses
-      attr_reader :documentation
+    class Response
+      attr_reader :status_code
+      attr_reader :result
 
       # Initializes the receiver with the given arguments.
       #
-      # @param request [Ast::Request] the request
-      # @param responses [<Ast::Responses>] the set of responses
-      # @param documentation [String] the documentation
-      def initialize(request, responses, documentation)
-        @request = request
-        @responses = responses
-        @documentation = documentation
+      # @param status_code [Number] the status code of the response
+      # @param result [<Ast::Member>] the result of the request
+      def initialize(status_code, result)
+        @status_code = status_code
+        @result = result
       end
 
       def deconstruct
@@ -24,9 +21,8 @@ module BlueprintToSwift
 
       def deconstruct_keys(keys)
         hash = {
-          request: request,
-          responses: responses,
-          documentation: documentation
+          status_code: status_code,
+          result: result
         }
 
         keys ? hash.slice(*keys) : hash
