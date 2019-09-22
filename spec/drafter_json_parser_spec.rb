@@ -101,6 +101,8 @@ describe BlueprintToSwift::DrafterJsonParser do
         string
       in Symbol
         drafter(value.to_s)
+      in nil
+        nil
       else
         raise "Unhandled type: #{value.class}"
     end
@@ -365,6 +367,14 @@ describe BlueprintToSwift::DrafterJsonParser do
 
     it 'parses an data structure' do
       expect(parse_data_structure).to eq(result)
+    end
+
+    context 'when the given data structure is `nil`' do
+      let(:data_structure) { nil }
+
+      it 'returns an empty array' do
+        expect(parse_data_structure).to be_empty
+      end
     end
   end
 

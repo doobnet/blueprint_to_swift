@@ -101,7 +101,7 @@ module BlueprintToSwift
     end
 
     def parse_data_structure(data_structure)
-      parse_object(data_structure.content)
+      data_structure ? parse_object(data_structure.content) : []
     end
 
     def parse_object(object)
