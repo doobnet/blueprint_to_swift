@@ -256,7 +256,7 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:result) { [Ast::Api.new([resource_group])] }
 
     def parse
-      subject.send(:parse, data('full.json'))
+      subject.send(:parse, data('example1.json'))
     end
 
     it 'parses APIs' do
@@ -379,12 +379,36 @@ describe BlueprintToSwift::DrafterJsonParser do
     end
   end
 
+  describe 'parse_data_structure_content' do
+    def parse_data_structure_content
+      subject.send(:parse_data_structure_content, drafter(content))
+    end
+
+    context 'when the given content is an object' do
+      let(:content) { new_object }
+      let(:result) { Ast::Object.new([member]) }
+
+      it 'returns an instance of Ast::Object' do
+        expect(parse_data_structure_content).to eq(result)
+      end
+    end
+
+    context 'when the given content is an array' do
+      let(:content) { [new_object] }
+      let(:result) { Ast::Array.new([Ast::Object.new([member])]) }
+
+      it 'returns an instance of Ast::Array' do
+        expect(parse_data_structure_content).to eq(result)
+      end
+    end
+  end
+
   describe 'parse_object' do
     let(:object) { new_object }
     let(:result) { Ast::Object.new([member]) }
 
     def parse_object
-      subject.send(:parse_object, drafter(object))
+      subject.send(:parse_object, drafter(object).content)
     end
 
     it 'parses an object' do
