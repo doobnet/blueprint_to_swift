@@ -256,7 +256,7 @@ describe BlueprintToSwift::DrafterJsonParser do
     let(:result) { [Ast::Api.new([resource_group])] }
 
     def parse
-      subject.send(:parse, data('example1.json'))
+      subject.send(:parse, data('basic.json'))
     end
 
     it 'parses APIs' do
