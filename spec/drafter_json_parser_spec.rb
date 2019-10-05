@@ -401,6 +401,16 @@ describe BlueprintToSwift::DrafterJsonParser do
         expect(parse_data_structure_content).to eq(result)
       end
     end
+
+    context 'when the given content is an "deferred" type' do
+      let(:deferred_type) { 'foo' }
+      let(:content) { { element: ruby_string(deferred_type) } }
+      let(:result) { Ast::DeferredType.new(deferred_type) }
+
+      it 'returns an instance of Ast::DeferredType' do
+        expect(parse_data_structure_content).to eq(result)
+      end
+    end
   end
 
   describe 'parse_object' do

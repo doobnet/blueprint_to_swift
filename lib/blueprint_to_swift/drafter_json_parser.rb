@@ -109,7 +109,12 @@ module BlueprintToSwift
       case content
         in element: 'array', content: c then parse_array(c)
         in element: 'object', content: c then parse_object(c)
+        in element: element then parse_deferred_type(element)
       end
+    end
+
+    def parse_deferred_type(element)
+      Ast::DeferredType.new(element)
     end
 
     def parse_array(array)
