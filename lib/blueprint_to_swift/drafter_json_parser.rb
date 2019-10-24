@@ -24,12 +24,20 @@ module BlueprintToSwift
     private
 
     def parse_api(api)
-      resource_groups = api
+      categories = api
         .content
-        .filter { category?(@1) && type(@1) == 'resourceGroup' }
-        .map(&self.:parse_resource_group)
+        .filter(&self.:category?)
+        .map(&self.:parse_category)
 
-      Ast::Api.new(resource_groups)
+      Ast::Api.new(categories)
+    end
+
+    def parse_category(category)
+      case type(category)
+        in 'resourceGroup' then parse_resource_group(category)
+        in 'dataStructures' then parse_data_structures(category)
+        in type then raise "Unrecognized category: #{type}"
+      end
     end
 
     def parse_resource_group(resource_group)
@@ -44,6 +52,15 @@ module BlueprintToSwift
         &.content
 
       Ast::ResourceGroup.new(title(resource_group), description, resources)
+    end
+
+    def parse_data_structures(data_structures)
+      parsed_data_structure = data_structures
+        .content
+        .filter { @1.element == 'dataStructure' }
+        .map(&self.:parse_data_structure)
+
+      Ast::DataStructureGroup.new(parsed_data_structure)
     end
 
     def parse_resource(resource)

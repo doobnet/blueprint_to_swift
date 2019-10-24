@@ -50,6 +50,9 @@ describe BlueprintToSwift::DrafterJsonParser do
   let(:optional) { false }
   let(:method) { 'POST' }
 
+  let(:data_structure_group) { Ast::DataStructureGroup.new([data_structure]) }
+  let(:data_structure) { object }
+
   let(:resource_group) do
     Ast::ResourceGroup.new(
       resource_group_title,
@@ -138,6 +141,18 @@ describe BlueprintToSwift::DrafterJsonParser do
         },
         *resources
       ])
+    }
+  end
+
+  def new_data_structure_group(
+    data_structures: [new_data_structure]
+  )
+    {
+      element: ruby_string('category'),
+      meta: {
+        classes: [:dataStructures],
+      },
+      content: ruby_array(data_structures)
     }
   end
 
@@ -275,6 +290,30 @@ describe BlueprintToSwift::DrafterJsonParser do
 
     it 'parses an API' do
       expect(parse_api).to eq(result)
+    end
+  end
+
+  describe 'parse_category' do
+    def parse_category
+      subject.send(:parse_category, drafter(category))
+    end
+
+    context 'when the category is a resource group' do
+      let(:category) { new_resource_group }
+      let(:result) { resource_group }
+
+      it 'returns and instance of `Ast::ResourceGroup`' do
+        expect(parse_category).to eq(result)
+      end
+    end
+
+    context 'when the category is a data structure group' do
+      let(:category) { new_data_structure_group }
+      let(:result) { data_structure_group }
+
+      it 'returns and instance of `Ast::DataStructureGroup`' do
+        expect(parse_category).to eq(result)
+      end
     end
   end
 

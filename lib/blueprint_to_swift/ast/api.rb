@@ -3,10 +3,10 @@
 module BlueprintToSwift
   module Ast
     class Api
-      attr_accessor :resource_groups
+      attr_accessor :categories
 
-      def initialize(resource_groups)
-        @resource_groups = resource_groups
+      def initialize(categories)
+        @categories = categories
       end
 
       def deconstruct
@@ -15,7 +15,7 @@ module BlueprintToSwift
 
       def deconstruct_keys(keys)
         hash = {
-          resource_groups: resource_groups
+          categories: categories
         }
 
         keys ? hash.slice(*keys) : hash
