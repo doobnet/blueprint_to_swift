@@ -55,7 +55,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   end
 
   let(:data_structure_group) { Ast::DataStructureGroup.new([data_structure]) }
-  let(:data_structure) { object }
+  let(:data_structure) { Ast::DataStructure.new(object) }
 
   let(:resource_group) do
     Ast::ResourceGroup.new(
@@ -73,8 +73,8 @@ describe BlueprintToSwift::DrafterJsonParser do
     Ast::HttpTransaction.new(request, [response], transition_documentation)
   end
 
-  let(:request) { Ast::Request.new(method, object) }
-  let(:response) { Ast::Response.new(status_code.to_i, object) }
+  let(:request) { Ast::Request.new(method, data_structure) }
+  let(:response) { Ast::Response.new(status_code.to_i, data_structure) }
   let(:object) { Ast::Object.new([member]) }
 
   let(:member) do
@@ -272,6 +272,10 @@ describe BlueprintToSwift::DrafterJsonParser do
     member
   end
 
+  it 'fooas' do
+    subject.send(:parse, data('deferred_type.json'))
+  end
+
   describe 'parse' do
     let(:result) { [Ast::Api.new([resource_group])] }
 
@@ -378,7 +382,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_response' do
     let(:response) { new_response }
-    let(:result) { Ast::Response.new(status_code.to_i, object) }
+    let(:result) { Ast::Response.new(status_code.to_i, data_structure) }
 
     def parse_response
       subject.send(:parse_response, drafter(response))
@@ -391,7 +395,7 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_request' do
     let(:request) { new_request }
-    let(:result) { Ast::Request.new(method, object) }
+    let(:result) { Ast::Request.new(method, data_structure) }
 
     def parse_request
       subject.send(:parse_request, drafter(request))
@@ -404,7 +408,8 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_data_structure' do
     let(:data_structure) { new_data_structure }
-    let(:result) { Ast::Object.new([member]) }
+    let(:content) { Ast::Object.new([member]) }
+    let(:result) { Ast::DataStructure.new(content) }
 
     def parse_data_structure
       subject.send(:parse_data_structure, drafter(data_structure))
@@ -424,13 +429,15 @@ describe BlueprintToSwift::DrafterJsonParser do
   end
 
   describe 'parse_data_structure_content' do
+    let(:result) { Ast::DataStructure.new(result_content) }
+
     def parse_data_structure_content
       subject.send(:parse_data_structure_content, drafter(content))
     end
 
     context 'when the given content is an object' do
       let(:content) { new_object }
-      let(:result) { Ast::Object.new([member]) }
+      let(:result_content) { Ast::Object.new([member]) }
 
       it 'returns an instance of Ast::Object' do
         expect(parse_data_structure_content).to eq(result)
@@ -439,7 +446,11 @@ describe BlueprintToSwift::DrafterJsonParser do
 
     context 'when the given content is an array' do
       let(:content) { [new_object] }
-      let(:result) { Ast::Array.new([Ast::Object.new([member])]) }
+      let(:result_content) { Ast::Array.new([data_structure_object]) }
+
+      let(:data_structure_object) do
+        Ast::DataStructure.new(Ast::Object.new([member]))
+      end
 
       it 'returns an instance of Ast::Array' do
         expect(parse_data_structure_content).to eq(result)
@@ -449,7 +460,7 @@ describe BlueprintToSwift::DrafterJsonParser do
     context 'when the given content is an "deferred" type' do
       let(:deferred_type) { 'foo' }
       let(:content) { { element: ruby_string(deferred_type) } }
-      let(:result) { Ast::DeferredType.new(deferred_type) }
+      let(:result_content) { Ast::DeferredType.new(deferred_type) }
 
       it 'returns an instance of Ast::DeferredType' do
         expect(parse_data_structure_content).to eq(result)
@@ -459,10 +470,10 @@ describe BlueprintToSwift::DrafterJsonParser do
 
   describe 'parse_object' do
     let(:object) { new_object }
-    let(:result) { Ast::Object.new([member]) }
+    let(:result) { Ast::DataStructure.new(Ast::Object.new([member])) }
 
     def parse_object
-      subject.send(:parse_object, drafter(object).content)
+      subject.send(:parse_object, drafter(object))
     end
 
     it 'parses an object' do

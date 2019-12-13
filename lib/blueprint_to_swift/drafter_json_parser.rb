@@ -125,21 +125,24 @@ module BlueprintToSwift
     def parse_data_structure_content(content)
       case content
         in element: 'array', content: c then parse_array(c)
-        in element: 'object', content: c then parse_object(c)
+        in element: 'object' then parse_object(content)
         in element: element then parse_deferred_type(element)
       end
     end
 
     def parse_deferred_type(element)
-      Ast::DeferredType.new(element)
+      Ast::DataStructure.new(Ast::DeferredType.new(element))
     end
 
     def parse_array(array)
-      Ast::Array.new(array.map(&self.:parse_data_structure_content))
+      content = Ast::Array.new(array.map(&self.:parse_data_structure_content))
+      Ast::DataStructure.new(content)
     end
 
     def parse_object(object)
-      Ast::Object.new(object.map(&self.:parse_object_member))
+      content = Ast::Object.new(object.content.map(&self.:parse_object_member))
+      id = object.meta&.id&.content
+      Ast::DataStructure.new(content, id)
     end
 
     def parse_object_member(member)
