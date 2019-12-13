@@ -50,6 +50,10 @@ describe BlueprintToSwift::DrafterJsonParser do
   let(:optional) { false }
   let(:method) { 'POST' }
 
+  let(:member_attributes) do
+    { typeAttributes: optional ? [:optional] : [:required] }
+  end
+
   let(:data_structure_group) { Ast::DataStructureGroup.new([data_structure]) }
   let(:data_structure) { object }
 
@@ -246,15 +250,16 @@ describe BlueprintToSwift::DrafterJsonParser do
     example: self.example,
     optional: self.optional,
     description: nil,
-    default_value: nil
+    default_value: nil,
+    attributes: self.member_attributes
   )
     member = {
       element: 'member',
-      attributes: { typeAttributes: optional ? [:optional] : [:required] },
       content: { key: name, value: example }
     }
 
     member[:meta] = { description: description } if description
+    member[:attributes] = attributes if attributes
 
     if default_value
       member[:content][:value] = {
@@ -531,6 +536,14 @@ describe BlueprintToSwift::DrafterJsonParser do
 
       it 'returns a Member where "default_value" is `asd`' do
         expect(parse_object_member.default_value).to eq(default_value)
+      end
+    end
+
+    context 'when the member has no attributes' do
+      let(:member_attributes) { nil }
+
+      it 'successfully parses an object member' do
+        expect { parse_object_member }.to_not raise_error
       end
     end
   end

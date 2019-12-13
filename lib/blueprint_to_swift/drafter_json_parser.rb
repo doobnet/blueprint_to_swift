@@ -145,9 +145,9 @@ module BlueprintToSwift
     def parse_object_member(member)
       is_optional = member
         .attributes
-        .typeAttributes
-        .content
-        .any? { @1.content == 'optional' }
+        &.typeAttributes
+        &.content
+        &.any? { @1.content == 'optional' } || false
 
       name = member.content.key.content
       type = member.content.value.element
