@@ -140,7 +140,8 @@ module BlueprintToSwift
     end
 
     def parse_object(object)
-      content = Ast::Object.new(object.content.map(&self.:parse_object_member))
+      members = object.content&.map(&self.:parse_object_member) || []
+      content = Ast::Object.new(members)
       id = object.meta&.id&.content
       Ast::DataStructure.new(content, id)
     end

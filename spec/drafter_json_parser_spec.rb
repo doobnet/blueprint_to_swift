@@ -239,10 +239,8 @@ describe BlueprintToSwift::DrafterJsonParser do
   end
 
   def new_object(members = [new_member])
-    {
-      element: ruby_string('object'),
-      content: ruby_array(members)
-    }
+    object = { element: ruby_string('object') }
+    members ? object.merge(content: ruby_array(members)) : object
   end
 
   def new_member(
@@ -273,7 +271,7 @@ describe BlueprintToSwift::DrafterJsonParser do
   end
 
   it 'fooas' do
-    subject.send(:parse, data('deferred_type.json'))
+    subject.send(:parse, data('full2.json'))
   end
 
   describe 'parse' do
@@ -478,6 +476,14 @@ describe BlueprintToSwift::DrafterJsonParser do
 
     it 'parses an object' do
       expect(parse_object).to eq(result)
+    end
+
+    context 'without any content' do
+      let(:object) { new_object(nil) }
+
+      it 'returns an objet with any empty array of members' do
+        expect(parse_object.content.members).to be_empty
+      end
     end
   end
 
