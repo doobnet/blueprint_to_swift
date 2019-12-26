@@ -98,13 +98,13 @@ describe BlueprintToSwift::DrafterJsonParser do
   def drafter(value)
     case value
       in Array
-        OpenStruct.new(element: 'array', content: value.map(&self.:drafter))
+        OpenStruct.new(element: 'array', content: value.map { drafter(_1) })
       in Hash
-        OpenStruct.new(value.transform_values(&self.:drafter))
+        OpenStruct.new(value.transform_values { drafter(_1) })
       in Numeric | String
         OpenStruct.new(element: value_to_type(value), content: value)
       in RubyArray(array)
-        array.map(&self.:drafter)
+        array.map { drafter(_1) }
       in RubyString(string)
         string
       in Symbol

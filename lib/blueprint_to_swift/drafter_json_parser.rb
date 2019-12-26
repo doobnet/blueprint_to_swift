@@ -17,8 +17,8 @@ module BlueprintToSwift
       JSON
         .parse(content, object_class: OpenStruct)
         .content
-        .filter { category?(@1) && type(@1) == 'api' }
-        .map(&self.:parse_api)
+        .filter { category?(_1) && type(_1) == 'api' }
+        .map { parse_api(_1) }
     end
 
     private
@@ -26,8 +26,8 @@ module BlueprintToSwift
     def parse_api(api)
       categories = api
         .content
-        .filter(&self.:category?)
-        .map(&self.:parse_category)
+        .filter { category?(_1) }
+        .map { parse_category(_1) }
 
       Ast::Api.new(categories)
     end
@@ -43,12 +43,12 @@ module BlueprintToSwift
     def parse_resource_group(resource_group)
       resources = resource_group
         .content
-        .filter { @1.element == 'resource' }
-        .map(&self.:parse_resource)
+        .filter { _1.element == 'resource' }
+        .map { parse_resource(_1) }
 
       description = resource_group
         .content
-        .find { @1.element == 'copy' }
+        .find { _1.element == 'copy' }
         &.content
 
       Ast::ResourceGroup.new(title(resource_group), description, resources)
@@ -57,8 +57,8 @@ module BlueprintToSwift
     def parse_data_structures(data_structures)
       parsed_data_structure = data_structures
         .content
-        .filter { @1.element == 'dataStructure' }
-        .map(&self.:parse_data_structure)
+        .filter { _1.element == 'dataStructure' }
+        .map { parse_data_structure(_1) }
 
       Ast::DataStructureGroup.new(parsed_data_structure)
     end
@@ -69,8 +69,8 @@ module BlueprintToSwift
 
       http_transactions = resource
         .content
-        .filter { @1.element == 'transition' }
-        .flat_map(&self.:parse_transition)
+        .filter { _1.element == 'transition' }
+        .flat_map { parse_transition(_1) }
 
       Ast::Resource.new(title, path, http_transactions)
     end
@@ -79,22 +79,22 @@ module BlueprintToSwift
     def parse_transition(transition)
       documentation = transition
         .content
-        .find { @1.element == 'copy' }
+        .find { _1.element == 'copy' }
         &.content
 
       transition
         .content
-        .filter { @1.element == 'httpTransaction' }
-        .map { parse_http_transaction(@1, documentation) }
+        .filter { _1.element == 'httpTransaction' }
+        .map { parse_http_transaction(_1, documentation) }
     end
 
     def parse_http_transaction(http_transaction, documentation)
       content = http_transaction.content
-      request = parse_request(content.find { @1.element == 'httpRequest' })
+      request = parse_request(content.find { _1.element == 'httpRequest' })
 
       responses = content
-        .filter { @1.element == 'httpResponse' }
-        .map(&self.:parse_response)
+        .filter { _1.element == 'httpResponse' }
+        .map { parse_response(_1) }
 
       Ast::HttpTransaction.new(request, responses, documentation)
     end
@@ -103,7 +103,7 @@ module BlueprintToSwift
       raise ArgumentError, 'the given request is nil' unless request
 
       method = request.attributes['method'].content
-      data_structure = request.content.find { @1.element == 'dataStructure' }
+      data_structure = request.content.find { _1.element == 'dataStructure' }
       parameters = parse_data_structure(data_structure)
 
       Ast::Request.new(method, parameters)
@@ -111,7 +111,7 @@ module BlueprintToSwift
 
     def parse_response(response)
       status_code = response.attributes.statusCode.content.to_i
-      data_structure = response.content.find { @1.element == 'dataStructure' }
+      data_structure = response.content.find { _1.element == 'dataStructure' }
       parameters = parse_data_structure(data_structure)
 
       Ast::Response.new(status_code, parameters)
@@ -135,12 +135,12 @@ module BlueprintToSwift
     end
 
     def parse_array(array)
-      content = Ast::Array.new(array.map(&self.:parse_data_structure_content))
+      content = Ast::Array.new(array.map { parse_data_structure_content(_1) })
       Ast::DataStructure.new(content)
     end
 
     def parse_object(object)
-      members = object.content&.map(&self.:parse_object_member) || []
+      members = object.content&.map { parse_object_member(_1) } || []
       content = Ast::Object.new(members)
       id = object.meta&.id&.content
       Ast::DataStructure.new(content, id)
@@ -151,7 +151,7 @@ module BlueprintToSwift
         .attributes
         &.typeAttributes
         &.content
-        &.any? { @1.content == 'optional' } || false
+        &.any? { _1.content == 'optional' } || false
 
       name = member.content.key.content
       type = member.content.value.element

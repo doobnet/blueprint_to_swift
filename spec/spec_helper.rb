@@ -10,7 +10,7 @@ require 'blueprint_to_swift'
 
 AwesomePrint.pry!
 
-Dir[File.join(BlueprintToSwift.root, 'spec/support/**/*.rb')].each { require @1 }
+Dir[File.join(BlueprintToSwift.root, 'spec/support/**/*.rb')].each { require _1 }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
