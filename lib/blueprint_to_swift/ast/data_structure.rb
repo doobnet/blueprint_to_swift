@@ -8,7 +8,7 @@ module BlueprintToSwift
 
       # Initializes the receiver with the given arguments.
       #
-      # @param content [Ast::Object, Ast::Array, Ast::DeferredType]
+      # @param content [Ast::Object, Ast::Array, Ast::DeferredType, Ast::Any]
       #   the data structures of the group
       #
       # @param id [String, nil] the id of the data structure

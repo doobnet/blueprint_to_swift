@@ -140,10 +140,17 @@ module BlueprintToSwift
     end
 
     def parse_object(object)
-      members = object.content&.map { parse_object_member(_1) } || []
-      content = Ast::Object.new(members)
-      id = object.meta&.id&.content
-      Ast::DataStructure.new(content, id)
+      case object
+        in content: c
+          members = c.map { parse_object_member(_1) }
+          content = Ast::Object.new(members)
+          id = object.meta&.id&.content
+          return Ast::DataStructure.new(content, id)
+        in element: 'object'
+          return Ast::DataStructure.new(Ast::Any.new)
+      else
+        raise 'Unrecognized structure of object'
+      end
     end
 
     def parse_object_member(member)

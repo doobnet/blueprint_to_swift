@@ -6,6 +6,7 @@ require 'optparse'
 require 'blueprint_to_swift/core_ext/ostruct/deconstruct'
 
 require 'blueprint_to_swift/application'
+require 'blueprint_to_swift/ast/any'
 require 'blueprint_to_swift/ast/api'
 require 'blueprint_to_swift/ast/array'
 require 'blueprint_to_swift/ast/data_structure'

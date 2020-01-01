@@ -481,8 +481,8 @@ describe BlueprintToSwift::DrafterJsonParser do
     context 'without any content' do
       let(:object) { new_object(nil) }
 
-      it 'returns an objet with any empty array of members' do
-        expect(parse_object.content.members).to be_empty
+      it 'returns an objet of type `Ast::Any`' do
+        expect(parse_object.content).to be_an(Ast::Any)
       end
     end
   end
