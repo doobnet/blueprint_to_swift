@@ -1,0 +1,17 @@
+# Group Foobar
+
+## Bar
+
+### Get messages [GET /hubs/{session_id}/messages/{max_count}]
+
+Required permission: *hubs_view*
+
++ Parameters
+    + max_count: 0 - Maximum number of most recent messages to return (0 = unlimited)
+
++ Response 200 (application/json)
+    + Attributes (array)
+        + (object)
+            + chat_message: foo (required)
+        + (object)
+            + status_message: bar (required)

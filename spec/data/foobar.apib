@@ -1,0 +1,13 @@
+# Group Sessions
+
+Session API provides methods for
+
+## Data Structures
+
+### Hub (object, fixed-type)
+
++ connect_state (object, required, fixed-type)
+    + id: connected (enum[string])
+        + connecting - Connecting to the hub in processed
+        + password - Password was requested by the hub and there is no saved one. The 'password' can be used to post one.
+        + connected

@@ -1,0 +1,274 @@
+{
+  "element": "parseResult",
+  "content": [
+    {
+      "element": "category",
+      "meta": {
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "api"
+            }
+          ]
+        },
+        "title": {
+          "element": "string",
+          "content": ""
+        }
+      },
+      "content": [
+        {
+          "element": "category",
+          "meta": {
+            "classes": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "string",
+                  "content": "resourceGroup"
+                }
+              ]
+            },
+            "title": {
+              "element": "string",
+              "content": "Sessions"
+            }
+          },
+          "content": [
+            {
+              "element": "copy",
+              "content": "Session API provides methods for"
+            }
+          ]
+        },
+        {
+          "element": "category",
+          "meta": {
+            "classes": {
+              "element": "array",
+              "content": [
+                {
+                  "element": "string",
+                  "content": "dataStructures"
+                }
+              ]
+            }
+          },
+          "content": [
+            {
+              "element": "dataStructure",
+              "content": {
+                "element": "object",
+                "meta": {
+                  "id": {
+                    "element": "string",
+                    "content": "Hub"
+                  }
+                },
+                "attributes": {
+                  "typeAttributes": {
+                    "element": "array",
+                    "content": [
+                      {
+                        "element": "string",
+                        "content": "fixedType"
+                      }
+                    ]
+                  }
+                },
+                "content": [
+                  {
+                    "element": "member",
+                    "attributes": {
+                      "typeAttributes": {
+                        "element": "array",
+                        "content": [
+                          {
+                            "element": "string",
+                            "content": "required"
+                          },
+                          {
+                            "element": "string",
+                            "content": "fixedType"
+                          }
+                        ]
+                      }
+                    },
+                    "content": {
+                      "key": {
+                        "element": "string",
+                        "content": "connect_state"
+                      },
+                      "value": {
+                        "element": "object",
+                        "content": [
+                          {
+                            "element": "member",
+                            "content": {
+                              "key": {
+                                "element": "string",
+                                "content": "id"
+                              },
+                              "value": {
+                                "element": "enum",
+                                "attributes": {
+                                  "enumerations": {
+                                    "element": "array",
+                                    "content": [
+                                      {
+                                        "element": "string",
+                                        "attributes": {
+                                          "typeAttributes": {
+                                            "element": "array",
+                                            "content": [
+                                              {
+                                                "element": "string",
+                                                "content": "fixed"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "content": "connected"
+                                      },
+                                      {
+                                        "element": "string",
+                                        "meta": {
+                                          "description": {
+                                            "element": "string",
+                                            "content": "Connecting to the hub in processed"
+                                          }
+                                        },
+                                        "attributes": {
+                                          "typeAttributes": {
+                                            "element": "array",
+                                            "content": [
+                                              {
+                                                "element": "string",
+                                                "content": "fixed"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "content": "connecting"
+                                      },
+                                      {
+                                        "element": "string",
+                                        "meta": {
+                                          "description": {
+                                            "element": "string",
+                                            "content": "Password was requested by the hub and there is no saved one. The 'password' can be used to post one."
+                                          }
+                                        },
+                                        "attributes": {
+                                          "typeAttributes": {
+                                            "element": "array",
+                                            "content": [
+                                              {
+                                                "element": "string",
+                                                "content": "fixed"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        "content": "password"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "content": {
+                                  "element": "string",
+                                  "attributes": {
+                                    "typeAttributes": {
+                                      "element": "array",
+                                      "content": [
+                                        {
+                                          "element": "string",
+                                          "content": "fixed"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "content": "connected"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "element": "annotation",
+      "meta": {
+        "classes": {
+          "element": "array",
+          "content": [
+            {
+              "element": "string",
+              "content": "warning"
+            }
+          ]
+        }
+      },
+      "attributes": {
+        "code": {
+          "element": "number",
+          "content": 4
+        },
+        "sourceMap": {
+          "element": "array",
+          "content": [
+            {
+              "element": "sourceMap",
+              "content": [
+                {
+                  "element": "array",
+                  "content": [
+                    {
+                      "element": "number",
+                      "attributes": {
+                        "line": {
+                          "element": "number",
+                          "content": 10
+                        },
+                        "column": {
+                          "element": "number",
+                          "content": 7
+                        }
+                      },
+                      "content": 155
+                    },
+                    {
+                      "element": "number",
+                      "attributes": {
+                        "line": {
+                          "element": "number",
+                          "content": 10
+                        },
+                        "column": {
+                          "element": "number",
+                          "content": 35
+                        }
+                      },
+                      "content": 29
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "content": "duplicit value in enumeration"
+    }
+  ]
+}

@@ -1,0 +1,4036 @@
+FORMAT: 1A
+
+# AirDC++ Web API
+
+>Missing information, typos or other errors? You can help with improving the documentation by [editing it on Github](https://github.com/airdcpp-web/airdcpp-apidocs).
+
+>API-related bugs or feature requests? Please report them for the [AirDC++ Web Client project on Github](https://github.com/airdcpp-web/airdcpp-webclient/issues).
+
+AirDC++ Web API is used for communicating with AirDC++ file sharing application via HTTP REST or [WebSockets](https://en.wikipedia.org/wiki/WebSocket).
+
+## Version history
+
+### API version 1 (2017-05-05)
+
+First documented API version
+
+#### Compatible applications
+
+- [AirDC++ Web Client](https://airdcpp-web.github.io) 2.0.0 or newer
+- [AirDC++ for Windows](https://www.airdcpp.net) 3.40 or newer
+
+
+## Communicating with the API
+
+When communicating with the API locally, you can write an extension that is managed by the application itself (see the [Resources section](#resources) below)
+
+You may also access the API from external sources (such as shell scripts or command line). For example, the following terminal command can be used to rescan all your shared files:
+
+`curl -H "Content-Type: application/json" -X POST -u myusername:mypassword http://localhost:5600/api/v1/share/refresh`
+
+See [communication-protocols.md on GitHub](https://github.com/airdcpp-web/airdcpp-apidocs/blob/master/communication-protocols.md) for more information about the raw HTTP/WebSocket protocol.
+
+
+## Resources
+
+### Tools
+
+**[airdcpp-create-extension](https://github.com/airdcpp-web/airdcpp-create-extension)**
+
+Extension starter project for JavaScript
+
+**[airdcpp-extensions](https://github.com/airdcpp-web/airdcpp-extensions)**
+
+Extension specifications
+
+**[airdcpp-apisocket-js](https://github.com/airdcpp-web/airdcpp-apisocket-js)**
+
+Websocket connector for Javascript (Node.js/web browsers) for remote/browser-side communication
+
+
+### Usage examples
+
+- [Example JavaScript extensions](https://github.com/airdcpp-web/airdcpp-extension-js/tree/master/examples)
+- [Example Python extension](https://github.com/airdcpp-web/airdcpp-example-python-extension)
+- [Release validator extension (JavaScript)](https://github.com/maksis/airdcpp-release-validator)
+- [AirDC++ Web UI (JavaScript)](https://github.com/airdcpp-web/airdcpp-webui)
+
+
+# Group Favorite directories
+
+
+## Favorite directories [/favorite_directories]
+
+### List favorite directories [GET]
+
+Get a list of all favorite directories.
+
+Required permission: *settings_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Favorite directory])
+
+### Get grouped paths [GET /favorite_directories/grouped_paths]
+
++ Response 200 (application/json)
+    + Attributes (array[Grouped path])
+
+### Create favorite directory [POST]
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Linux/ (required) - Directory path
+        + name: Linux (optional) - Virtual display name for the directory. Multiple paths can be added with the same name. Name will be determined from the path if not specified.
+
++ Response 200 (application/json)
+    + Attributes (Favorite directory)
+
+## Favorite directory [/favorite_directories/{directory_id}]
+
+### Update favorite directory [PATCH]
+
+Update the specified fields of a favorite directory.
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes
+        + name: Linux - Virtual display name for the directory. Multiple paths can be added with the same name.
+
++ Response 200 (application/json)
+    + Attributes (Favorite directory)
+
+### Get favorite directory [GET]
+
+Get a single directory by ID.
+
+Required permission: *settings_view*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Favorite directory)
+
+### Remove favorite directory [DELETE]
+
+Required permission: *settings_edit*
+
++ Response 204
+
+
+## Event listeners [/favorite_directories/listeners]
+
+Required permission: *settings_view*
+
+### Favorite directories updated [POST /favorite_hubs/listeners/favorite_hub_updated]
+
++ Response 200 (application/json)
+    + Attributes (array[Favorite directory])
+
+## Data Structures
+
+### Favorite directory
+
++ id: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y
++ name: Linux - Virtual display name for the directory. Multiple paths can be added with the same name.
++ path: /home/airdcpp/share/Linux/ - Directory path
+
+
+
+
+# Group Favorite hubs
+
+Favorite hubs allow storing commonly used hubs that can be opened automatically on application startup. Various settings, such as user identification info and connectivity, can be customized on per-hub basis.
+
+## Favorite hubs [/favorite_hubs]
+
+### List favorite hubs [GET /favorite_hubs/{start}/{count}]
+
+
+Get a list of favorite hubs
+
+Required permission: *favorite_hubs_view*
+
+
++ Parameters
+    + start: 0 - Index of the first item to return
+    + count: 100 - Maximum number of items to return, must be larger than 0
+
++ Response 200 (application/json)
+    + Attributes (array[Favorite hub])
+
+### Create favorite hub [POST]
+
+Required permission: *favorite_hubs_edit*
+
++ Request (application/json)
+    + Attributes (Favorite hub request)
+
++ Response 200 (application/json)
+    + Attributes (Favorite hub)
+
+## Favorite hub [/favorite_hubs/{hub_id}]
+
+### Update favorite hub [PATCH]
+
+Update the specified fields of a favorite hub
+
+Required permission: *favorite_hubs_edit*
+
++ Request (application/json)
+    + Attributes (Favorite hub request)
+
++ Response 200 (application/json)
+    + Attributes (Favorite hub)
+
+### Get favorite hub [GET]
+
+Get a single hub by ID.
+
+Required permission: *favorite_hubs_view*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes (Favorite hub)
+
+### Remove favorite hub [DELETE]
+
+Required permission: *favorite_hubs_edit*
+
++ Response 204
+
+
+## Event listeners [/favorite_hubs/listeners]
+
+Required permission: *favorite_hubs_view*
+
+### Favorite hub created [POST /favorite_hubs/listeners/favorite_hub_created]
+
++ Response 200 (application/json)
+    + Attributes (Favorite hub)
+
+### Favorite hub updated [POST /favorite_hubs/listeners/favorite_hub_updated]
+
++ Response 200 (application/json)
+    + Attributes (Favorite hub)
+
+### Favorite hub created [POST /favorite_hubs/listeners/favorite_hub_removed]
+
++ Response 200 (application/json)
+    + Attributes (Favorite hub)
+
+## Data Structures
+
+### Favorite hub base
+
++ name: Demo hub
++ hub_description: Demo hub for AirDC++ Web Client
++ hub_url: adcs://myhub.com:6423
++ auto_connect: true (boolean) - Automatically connect to this hub on startup
++ nick: Developer (nullable) - User nick (defaults to global value if not set)
++ user_description: Just writing scripts (nullable) - User description (defaults to global value if not set)
++ nmdc_encoding: CP1252 (nullable) - Iconv codepage to use for text conversion (NMDC hubs only, defaults to global value if not set)
++ connection_mode_v4 (Connectivity mode, nullable) - IPv4 connectivity mode (defaults to global value if not set)
++ connection_mode_v6 (Connectivity mode, nullable) - IPv6 connectivity mode (defaults to global value if not set)
++ connection_ip_v4: 89.255.248.35 (nullable) - IPv4 address (defaults to global value if not set)
++ connection_ip_v6: 2a00:1a48:1261::168 (nullable) - IPv6 address (defaults to global value if not set)
+
+### Favorite hub (Favorite hub base)
+
++ id: 64723743 (number)
++ connect_state (object)
+    + id: connected (enum[string])
+        + connecting
+        + connected
+        + disconnected
+    + str: Connected
+    + current_hub_id: 5 (number) - Current hub session ID (0 = no session)
++ share_profile (Share profile basic, nullable) - Share profile to use (ADC hubs only, defaults to global value if not set)
++ has_password: true (boolean) - Specifies whether a password has been saved for this entry
+
+### Favorite hub request (Favorite hub base)
+
++ share_profile: 7436564 (number, nullable)  - Share profile to use (ADC hubs only, defaults to global value if not set)
++ password: mystrongpassword (nullable)
+
+
+# Group Events
+
+Events are used for displaying and logging informative messages and errors to the application user. Note that events are not bind to any specific context;
+some entities, such as hubs, provide similar methods for showing information locally to the application user.
+
+## Methods [/events]
+
+### Get events [GET /events/{max_count}]
+
+Get the latest event message. Returned messages are be sorted from oldest to newest.
+
+Required permission: *events_view*
+
++ Parameters
+    + max_count: 0 - Maximum number of messages to return (starts from the latest ones, 0 = unlimited)
+
++ Response 200 (application/json)
+    + Attributes (array[Status message])
+
+### Add event [POST /events]
+
+Send a new event message.
+
+Required permission: *events_edit*
+
++ Request (application/json)
+    + Attributes (Status message request)
+
++ Response 204
+
+### Clear event cache [DELETE /events]
+
+Required permission: *events_edit*
+
++ Response 204
+
+### Set all events as read [POST /events/read]
+
+Required permission: *events_edit*
+
++ Response 204
+
+### Get event counts [GET /events/counts]
+
+Required permission: *events_view*
+
++ Response 200 (application/json)
+    + Attributes (Log message info)
+
+
+## Event listeners [/events/listeners]
+
+Required permission: *events_view*
+
+### Event counts updated [POST /events/listeners/event_counts]
+
++ Response 200 (application/json)
+    + Attributes (Log message info)
+
+### Event added [POST /events/listeners/event_message]
+
++ Response 200 (application/json)
+    + Attributes (Status message)
+
+# Group Extensions
+
+
+## Extensions [/extensions]
+
+### Get extensions [GET]
+
+Get a list of all installed extensions.
+
+Required permission: *admin*
+
++ Response 200 (application/json)
+    + Attributes (array[Extension])
+
+### Register unmanaged extension [POST]
+
+Register an extension from the calling session. The request payload should contain all required fields from package.json.
+
+Sending the whole package.json content is acceptable as well.
+
+Please see [the extension specifications](https://github.com/airdcpp-web/airdcpp-extensions#packagejson) for more information about the package.json format.
+
+Required permission: *admin*
+
++ Request (application/json)
+
+        {
+            "name": "airdcpp-create-extension",
+            "version": "0.0.1-beta5",
+            "description": "Starter project for AirDC++ extension development."
+            "author": {
+                "name": "maksis"
+            },
+            "keywords": [ "airdcpp", "airdcpp-extensions", "airdcpp-extensions-public", "airdcpp-extensions-test" ],
+            "bugs": "https://github.com/airdcpp-web/airdcpp-create-extension/issues/",
+            "repository": {
+                "type": "git",
+                "url": "https://github.com/airdcpp-web/airdcpp-create-extension/"
+            },
+            "airdcpp": {
+                "apiVersion": 1,
+                "minApiFeatureLevel": 0
+            }
+        }
+
++ Response 200 (application/json)
+    + Attributes (Extension)
+
+### Install managed extension [POST /extensions/download]
+
+Download extension package from the remote URL. The package will be installed and started automatically.
+
+Required permission: *admin*
+
++ Request (application/json)
+    + Attributes
+        + install_id: `airdcpp-create-extension` - Install ID that can be used for tracking the installation progress events. Any (unique) string can be used (such as the name of the extension).
+        + url: https://registry.npmjs.org/airdcpp-create-extension/-/airdcpp-create-extension-0.0.1-beta4.tgz - URL from which the extension should be download from
+        + shasum: 77f49298863b1460cf65e6c125e659f7dd9dac9e (optional) - Possible SHA1 sum that can be used for validating the package integrity
++ Response 204
+
+
+## Extension entity [/extensions/{extension_id}]
+
+### Get extension [GET]
+
+Get a single extension by ID.
+
+Required permission: *admin*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Extension)
+
+### Remove extension [DELETE]
+
+Required permission: *admin*
+
++ Response 204
+
+
+
+## Event listeners [/extensions/listeners]
+
+Required permission: *admin*
+
+All event listeners from extension entities are also available to be used across all sessions (add them with */extensions/listeners/event_name*).
+
+### Extension added [POST /extensions/listeners/extension_created]
+
++ Response 200 (application/json)
+
+    + Attributes (Extension)
+
+### Extension removed [POST /extensions/listeners/extension_removed]
+
++ Response 200 (application/json)
+    + Attributes (Extension)
+
+### Extension package updated [POST /extensions/listeners/extension_package_updated]
+
++ Response 200 (application/json)
+    + Attributes (Extension)
+
+### Extension installation started [POST /extensions/listeners/extension_installation_started]
+
++ Response 200 (application/json)
+    + Attributes
+        + install_id: `airdcpp-create-extension` - The supplied extension install ID
+
+### Extension installation succeeded [POST /extensions/listeners/extension_installation_succeeded]
+
++ Response 200 (application/json)
+    + Attributes
+        + install_id: `airdcpp-create-extension` - The supplied extension install ID
+
+### Extension installation failed [POST /extensions/listeners/extension_installation_failed]
+
++ Response 200 (application/json)
+    + Attributes
+        + install_id: `airdcpp-create-extension` - The supplied extension install ID
+        + message: `Failed to move extension files to the final destination directory (permission denied)`
+
+
+## Data Structures
+
+### Extension
+
++ id: airdcpp-create-extension
++ name: airdcpp-create-extension
++ description: Starter project for AirDC++ extension development
++ version: 0.0.1-beta4
++ homepage: https://airdcpp-web.github.io
++ author: maksis
++ running: true (boolean)
++ private: false (boolean) - Whether the extension is private (not published at npm)
++ logs (array[Filesystem item])
++ engines: node (array[string]) - List of scripting engines supported by the extension
++ managed: true - Whether the extension is managed (installed locally)
++ has_settings: true (boolean) - Whether there settings available for configuring
+
+
+# Group Extension entities
+
+## Methods [/extensions/{extension_id}/methods]
+
+### Start extension [POST /extensions/{extension_id}/start]
+
+Required permission: *admin*
+
++ Response 204
+
+### Stop extension [POST /extensions/{extension_id}/stop]
+
+Required permission: *admin*
+
++ Response 204
+
+
+
+### Post setting definitions [POST /extensions/{extension_id}/settings/definitions]
+
+Post schema for settings that can be added in the UI for configuring.
+
+Setting definitions can't be changed or removed after they have been posted.
+
+Required permission: *admin*
+
++ Request (application/json)
+    + Attributes (array[Setting definition])
++ Response 204
+
+
+### Get setting definitions [GET /extensions/{extension_id}/settings/definitions]
+
+Get schema information of the extension settings.
+
+Required permission: *settings_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Setting definition])
+
+
+
+### Get setting values [GET /extensions/{extension_id}/settings]
+
+Required permission: *settings_view*
+
++ Response 200 (application/json)
+    + Attributes (object)
+
+        Key-value listing of setting keys and their current values
+
+        + spam_on_startup: false (boolean)
+        + banner_text: Test
+
+### Update setting values [PATCH /extensions/{extension_id}/settings]
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes (object)
+
+        Key-value listing of setting keys and their new values
+
+        + spam_on_startup: false (boolean)
+        + banner_text: Test
+
++ Response 204
+
+
+
+## Event listeners [/extensions/{extension_id}/listeners]
+
+All event listeners from extension entities are also available to be used across all sessions (add them with */extensions/listeners/event_name*).
+
+Required permission: *admin*
+
+### Extension started [POST /extensions/listeners/extension_started]
+
++ Response 200 (application/json)
+    + Attributes (Extension)
+
+### Extension stopped [POST /extensions/listeners/extension_stopped]
+
++ Response 200 (application/json)
+    + Attributes (Extension)
+
+### Extension updated [POST /extensions/listeners/extension_updated]
+
+Generic listener for updated extension properties (only the updated ones are sent).
+
++ Response 200 (application/json)
+    + Attributes (Extension)
+
+### Extension settings updated [POST /extensions/listeners/extension_settings_updated]
+
++ Response 200 (application/json)
+    + Attributes (object)
+
+        Key-value listing of updated setting keys and their values
+
+        + spam_on_startup: false (boolean)
+        + banner_text: Test
+
+
+# Group Filelists
+
+Filelist API allows browsing remote users' shared content or own share and manages queueing of directory downloads from other users. Note that filelist sessions are shared across API/UI sessions. Filelists of non-AirDC++ users will also contain less information about filelist directories/files.
+
+API sessions use partial filelists so the content of each directory is downloaded only once it has been requested. Due to this, it may take some time when switching from one directory to another (especially when browsing remote NMDC filelists).
+
+
+## Filelist [/filelists]
+
+### Get filelist sessions [GET]
+
+Get a list of all filelist sessions.
+
+Required permission: *filelists_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Filelist])
+
+### Create remote filelist session [POST]
+
+Queue filelist from an user.
+
+Required permission: *filelists_edit*
+
++ Request (application/json)
+    + Attributes
+        + user (Hinted user base, required)
+        + directory: /Share/Ubuntu/ (optional) - Initial filelist directory to load. Filelist root is loaded, if not specified.
+            + Default: /
++ Response 200 (application/json)
+    + Attributes (Filelist)
+
+### Create local filelist session [POST /filelists/self]
+
+Browse own share.
+
+Required permission: *filelists_edit*
+
++ Request (application/json)
+    + Attributes
+        + share_profile: 643 (number, optional) - ID of the share profile to browse. Default profile is used if not specified.
++ Response 200 (application/json)
+    + Attributes (Filelist)
+
+### Match queue [POST /filelists/match_queue]
+
+Match queue and add the user as source for matching files.
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes
+        + user (Hinted user base, required)
+        + directory: /Share/Ubuntu/ (optional) - Directory to match from ADC (recursive partial list is used). Full filelist is always matched from NMDC users.
+            + Default: /
++ Response 204
+
+
+## Filelist session [/filelists/{session_id}]
+
+### Get session [GET]
+
+Get a single filelist session by ID.
+
+Required permission: *filelists_view*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Filelist)
+
+### Update session [PATCH]
+
+**Minimum API feature level**: 1
+
+Update filelist session properties
+
++ Request (application/json)
+    + Attributes
+        + hub_url: adcs://myhub.com:6423 - URL of the hub to browse the list through (remote filelists only)
+        + share_profile: 643 (number, optional) - ID of the share profile to browse (own filelist only)
+
++ Response 204
+
+### Remove session [DELETE]
+
+Required permission: *filelists_edit*
+
++ Response 204
+
+
+## Directory downloads [/filelists/directory_downloads]
+
+### Get directory downloads [GET]
+
+Get a list of all directory downloads.
+
+Required permission: *download*
+
++ Response 200 (application/json)
+    + Attributes (array[Directory download item])
+
+
+### Create directory download [POST]
+
+Queue all content inside the specified location. Recursive partial filelist will be downloaded from ADC users and full list is used with NMDC users.
+
+Required permission: *download*
+
++ Request (application/json)
+    + Attributes (Download params)
+        + user (Hinted user base, required)
+        + list_path: /Share/Ubuntu/ (required)
++ Response 200 (application/json)
+    + Attributes (Directory download item)
+
+
+## Directory download [/filelists/directory_downloads/{download_id}]
+
+### Remove directory download [DELETE]
+
+Required permission: *download*
+
++ Response 204
+
+
+
+## Event listeners [/filelists/listeners]
+
+All event listeners from filelist entities are also available to be used across all sessions (add them with */filelists/listeners/event_name*).
+
+Required permission: *filelists_view*
+
+### Filelist session created [POST /filelists/listeners/filelist_created]
+
++ Response 200 (application/json)
+
+    + Attributes (Filelist)
+
+### Filelist session removed [POST /filelists/listeners/filelist_removed]
+
++ Response 200 (application/json)
+    + Attributes (Filelist)
+
+### Directory download added [POST /filelists/listeners/filelist_directory_download_added]
+
++ Response 200 (application/json)
+    + Attributes (Directory download item)
+
+### Directory download removed [POST /filelists/listeners/filelist_directory_download_removed]
+
++ Response 200 (application/json)
+    + Attributes (Directory download item)
+
+### Directory download processed [POST /filelists/listeners/filelist_directory_download_processed]
+
++ Response 200 (application/json)
+    + Attributes
+        + directory_download (Directory download item)
+        + result (Queue directory bundle add info)
+
+### Directory download failed [POST /filelists/listeners/filelist_directory_download_failed]
+
++ Response 200 (application/json)
+    + Attributes (Directory download item)
+        + directory_download (Directory download item)
+        + error: The directory is empty
+
+## Data Structures
+
+### Filelist
+
++ id: NJSHVYR4ZHCZFUEZNGA7M2D72S5AB4WQAMPBKFA
++ user (Hinted user)
++ location (Filelist item) - Information about the current location
++ share_profile (Share profile basic) - Only available for own filelist
++ state (Downloadable item state)
++ read: false (boolean) - Has the filelist been marked as read
++ partial_list: true (boolean)
++ total_files: 53356 (number)
++ total_size: 221767274 (number)
+
+
+### Filelist item
+
++ id: 32 (number)
++ name: Ubuntu 14.04
++ type (File item type) - Directory content information (files and directories) is available from certain users only
++ path: /home/airdcpp/share/Ubuntu/Ubuntu 14.04/ - Path in remote user's share
++ tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y
++ dupe (Dupe, nullable)
++ time: 1483611358 (number) - File creation/modification date (available from certain users only)
++ size: 62523525626 (number) - Size in bytes (directory sizes are available from certain users only)
++ complete: true (boolean) - Whether the directory content has been downloaded
+
+
+### Directory download item (Download params)
+
++ id: 427 (number)
++ list_path: /Linux/Ubuntu/Ubuntu 14.04/
++ user (Hinted user)
+
+
+
+# Group Filelist entities
+
+## Methods [/filelists/{session_id}/items]
+
+### Get directory content [GET /filelists/{session_id}/items/{start}/{count}]
+
+Get a list of all files and directories inside the current filelist location. If the directory content has not yet been loaded, an error will be returned.
+
+Required permission: *filelists_view*
+
++ Parameters
+    + start: 0 - Index of the first item to return
+    + count: 100 - Maximum number of items to return, must be larger than 0
+
++ Response 200 (application/json)
+    + Attributes (array[Filelist item])
+
++ Response 503
+
+        Content of this directory is not yet available
+
+
+### Change directory [POST /filelists/{session_id}/directory]
+
+Change the current filelist directory.
+
+Required permission: *filelists_view*
+
++ Request (application/json)
+    + Attributes
+        + list_path: /Share/Ubuntu/ (required)
+        + reload: false (boolean, optional) - Force reloading of all existing content. This has no effect with full filelists.
+            + Default: false
++ Response 204
+
+### Set filelist as read [POST /filelists/{session_id}/read]
+
+Required permission: *filelists_view*
+
++ Response 204
+
+
+## Event listeners [/filelists/{session_id}/listeners]
+
+All event listeners from filelist entities are also available to be used across all sessions (add them with */filelists/listeners/event_name*).
+
+Required permission: *filelists_view*
+
+### Filelist session updated [POST /filelists/listeners/filelist_updated]
+
++ Response 200 (application/json)
+    + Attributes (Filelist)
+
+
+
+
+# Group Filesystem
+
+## Methods [/filesystem]
+
+### Create directory [POST /filesystem/directory]
+
+Required permission: *filesystem_edit*
+
++ Request (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/mynewdirectory/ (required) - Full path of the directory to create
+
++ Response 204
+
+### List directory content [POST /filesystem/list_items]
+
+Get a listing of items inside the supplied path
+
+Required permission: *filesystem_view*
+
++ Request (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/ (required) - Full path of the directory
+        + directories_only: false (boolean, optional) - List directories only
+            + Default: false
+
++ Response 200 (application/json)
+    + Attributes (array[Filesystem item])
+
+### Get disk space information [POST /filesystem/disk_info]
+
+Get disk space info for a set of directory paths
+
++ Request (application/json)
+    + Attributes
+        + paths: /home/airdcpp/share/dir/, /mnt/disk2/dir/ (array[string], required)
+
++ Response 200 (application/json)
+    + Attributes (array)
+        + (object)
+            + path: /home/airdcpp/share/dir/
+            + free_space: 81279320064 (number) - Free disk space in bytes
+            + total_space: 109646487552 (number) - Total disk space in bytes
+        + (object)
+            + path: /mnt/disk2/dir/
+            + free_space: 400443416576 (number) - Free disk space in bytes
+            + total_space: 2953372659712 (number) - Total disk space in bytes
+
+# Group Hashing
+
+
+## Methods [/hash]
+
+### Get database status [GET /hash/database_status]
+
+Required permission: *settings_view*
+
++ Response 200 (application/json)
+    + Attributes (Hash database status)
+
+
+### Optimize database [POST /hash/optimize_database]
+
+This operation will delete all hash information for files that aren't currently in share. If you are sharing files from network disks or from a removable storage, make sure that the files are currently shown in share (otherwise they have to be rehashed)
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes
+        + verify: true (boolean, required) - Verify integrity of the databases. This will remove corrupted hash data entries.
+
++ Response 204
+
+### Pause hashing [POST /hash/pause]
+
+Pause all running hashers.
+
+Required permission: *settings_edit*
+
++ Response 204
+
+### Resume hashing [POST /hash/resume]
+
+Resume all hashers in case they have been paused earlier.
+
+Required permission: *settings_edit*
+
++ Response 204
+
+### Stop hashing [POST /hash/stop]
+
+Stop all hashers and clear the files that have been queued for hashing.
+
+Required permission: *settings_edit*
+
++ Response 204
+
+
+## Event listeners [/hash/listeners]
+
+Required permission: *settings_view*
+
+### Database status updated [POST /hash/listeners/hash_database_status]
+
++ Response 200 (application/json)
+    + Attributes (Hash database status)
+
+### Hashing of a directory finished [POST /hash/listeners/hasher_directory_finished]
+
++ Response 200 (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Ubuntu/ - Directory path
+        + size: 43676423 (number) - Total size of the files that were hashed from this directory
+        + files: 7 (number) - Number of files that were hashed from this directory
+        + duration: 32574 (number) - Time in milliseconds that was spent on hashing the directory
+        + hasher_id: 0 (number) - ID of the hasher
+
+### Hashing finished [POST /hash/listeners/hasher_finished]
+
+A single hasher has finished.
+
++ Response 200 (application/json)
+    + Attributes
+        + size: 436764423 (number) - Total size of the files that were hashed
+        + files: 52 (number) - Number of files that were hashed
+        + directories: 4 (number) - Number of directories that were hashed
+        + duration: 6332574 (number) - Time in milliseconds that was spent on hashing the items
+        + hashed_id: 0 (number) - ID of the hasher
+
+
+### Hash statistics [POST /hash/listeners/hash_statistics]
+
+Only the properties that have changed since the last event are sent.
+
++ Response 200 (application/json)
+    + Attributes
+        + hash_speed: 4367623 (number) - Total current hashing speed, bytes per second
+        + hash_bytes_left: 52 (number) - Total number of bytes remaining to be hashed
+        + hash_files_left: 4 (number) - Total number of files remaining to be hashed
+        + hashers: 2 (number) - Number of hashing threads running
+
+
+## Data Structures
+
+### Hash database status
+
++ maintenance_running: false (boolean) - Whether database optimization is currently running
++ file_index_size: 2143207 (number) - Size of the file index database on disk (bytes)
++ hash_store_size: 446720235 (number) - Size of the hash store database on disk (bytes)
+
+
+# Group History
+
+History API allows storing and receiving various types of recently used data.
+
+## Strings [/histories/strings/{history_type}]
+
+Stores lists of plain strings for different input types.
+
+The following history types are available:
+
++ search_pattern - Previously used search patterns
++ search_excluded - Previously used excluded words for searching
++ download_target - Previously used download paths
+
+
+### Get strings [GET]
+
++ Parameters
+    + history_type
+
++ Response 200 (application/json)
+    + Attributes (array[string])
+        + ubuntu
+        + videos
+        + linux
+
+### Add string [PATCH /histories/strings/{history_type}]
+
+Add a new string in the specified string array.
+
++ Parameters
+    + history_type
+
++ Request (application/json)
+    + Attributes
+        + string: ubuntu
+
++ Response 204
+
+
+### Clear strings [DELETE]
+
+Clear the specified history array.
+
+Required permission: *settings_edit*
+
++ Parameters
+    + history_type
+
++ Response 204
+
+
+## Sessions [/histories/sessions/{history_type}]
+
+Stores lists of various previously opened sessions.
+
+The following history types are available:
+
++ hub
++ private_chat
++ filelist
+
+### Get session history [GET /histories/sessions/{history_type}/{max_count}]
+
+Required permission: *settings_view*
+
++ Parameters
+    + max_count: 0 - Maximum number of most recent sessions to return (0 = unlimited)
+
++ Response 200 (application/json)
+    + Attributes (array[History session])
+
+### Search session history [POST /histories/sessions/{history_type}/search]
+
+Search sessions with name matching the provided pattern. The most relevant match is returned first.
+
+Required permission: *settings_view*
+
++ Request (application/json)
+    + Attributes
+        + pattern: Demo (required)
+        + max_results: 5 (number, required)
+
++ Response 200 (application/json)
+    + Attributes (array[History session])
+
+### Clear session history [DELETE]
+
+Clear the specified history array.
+
+Required permission: *settings_edit*
+
++ Parameters
+    + history_type
+
++ Response 204
+
+
+## Data Structures
+
+### History session
+
++ name: Demo hub
++ hub_url: adcs://myhub.com:6423
++ description: Demo hub for AirDC++ Web Client
++ last_opened: 1483611358 (number) - Time when the session was opened previously
++ user (Hinted user) - Set only for private chat and filelist sessions
+
+
+
+# Group Hubs
+
+Hub API focuses on hub state management, chatting and hub-level user management.
+
+Hub sessions are identified by a numeric ID and the actual hub URL may change during the lifetime of a single session (e.g. in case of redirections).
+
+## Hubs [/hubs]
+
+### Get a list of all hub sessions [GET]
+
+Get a list of all open sessions.
+
+Required permission: *hubs_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Hub])
+
+### Create session [POST]
+
+Create a new hub session.
+
+Required permission: *hubs_edit*
+
++ Request (application/json)
+    + Attributes
+        + hub_url: adcs://myhub.com:6423 (required) - Full URL of the hub to connect to
++ Response 200 (application/json)
+    + Attributes (Hub)
+
+### Find session by URL [POST /hubs/find_by_url]
+
+Get a single hub session by URL (exact match).
+
+Required permission: *hubs_view*
+
++ Request (application/json)
+    + Attributes
+        + hub_url: adcs://myhub.com:6423 (required)
+
++ Response 200 (application/json)
+    + Attributes (Hub)
+
+### Stats [GET /hubs/stats]
+
+Return various statistics about the connected hubs and their users
+
+Required permission: *hubs_view*
+
++ Response 200 (application/json)
+
+### Send chat message [POST /hubs/chat_message]
+
+Send a public chat message message to specified hubs.
+
+Required permission: *hubs_send*
+
++ Request (application/json)
+    + Attributes (Chat message request, required)
+        + hub_urls: adcs://myhub.com:6423, mynmdchub.com (array, optional) - A list of hub URLs where the message should be sent to. The message will be sent to all connected hubs if this field is not provided.
+
++ Response 200 (application/json)
+    + Attributes
+        + sent: 1 (number) - Number of messages that were sent successfully. Message won't be sent to hubs that are not in 'connected' state.
+
+### Send status message [POST /hubs/status_message]
+
+Send a status message message that is only shown locally in specified hubs.
+
+Required permission: *hubs_edit*
+
++ Request (application/json)
+    + Attributes (Status message request, required)
+        + hub_urls: adcs://myhub.com:6423, mynmdchub.com (array, optional) - A list of hub URLs where the message should be shown. The message will be shown in all hubs if this field is not provided.
+
++ Response 200 (application/json)
+
+    + Attributes
+        + sent: 1 (number) - Number of messages that were sent successfully.
+
+## Session [/hubs/{session_id}]
+
+### Get session [GET]
+
+Get a single session by ID.
+
+Required permission: *hubs_view*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Hub)
+
+### Remove session [DELETE]
+
+Required permission: *hubs_edit*
+
++ Response 204
+
+
+## Event listeners [/hubs/listeners]
+
+All event listeners from hub entities are also available to be used across all sessions (add them with */hubs/listeners/event_name*).
+
+Required permission: *hubs_view*
+
+### Hub session created [POST /hubs/listeners/hub_created]
+
++ Response 200 (application/json)
+
+    + Attributes (Hub)
+
+### Hub session removed [POST /hubs/listeners/hub_removed]
+
++ Response 200 (application/json)
+    + Attributes (Hub)
+
+
+## Validation hooks [/hubs/hooks]
+
+Hooks should be used for validation purposes only. If just want to be notified about new hub messages, you should use [event listeners](#reference/hub-sessions/event-listeners) instead.
+
+### Incoming chat message [POST /hubs/hooks/hub_incoming_message_hook]
+
+Hook is fired for each incoming hub chat message and can be used to prevent certain messages from being displayed to the user.
+
++ Response 200 (application/json)
+    + Attributes (Chat message)
+
+### Outgoing chat message [POST /hubs/hooks/hub_outgoing_message_hook]
+
+Hook is fired for each outgoing hub chat message and can be used to prevent certain messages from being sent to the hub.
+
++ Response 200 (application/json)
+    + Attributes
+        + text: Hello world
+        + hub_url: adcs://myhub.com:6423
+        + session_id: 5 (number)
+
+
+## Data Structures
+
+### Hub
+
++ id: 5 (number)
++ hub_url: adcs://myhub.com:6423
++ connect_state (object)
+    + id: connected (enum[string])
+        + connecting - Connecting to the hub in processed
+        + password - Password was requested by the hub and there is no saved one. The 'password' can be used to post one.
+        + connected
+        + keyprint_mismatch - Keyprint specified in the hub URL doesn't match the actual hub certificate keyprint
+        + disconnected
+        + redirect - Redirect was requested to another hub (see state data)
+    + str: Connected
+    + data - Possible state-related data
+        + hub_url: mynmdchub.com - Redirect url ('redirect' state only)
++ identity (object)
+    + name: Demo hub
+    + description: Demo hub for AirDC++ Web Client
++ share_profile (Share profile)
++ favorite_hub: 64723743 (number) - Favorite hub ID (0 = no favorite hub)
++ message_counts (Chat message info)
++ encryption (Encryption, nullable) - Available only for connected ADCS hubs
+
+### Hub counts
+
++ share_size: 832572352 (number)
++ user_count: 3 (number)
+
+
+# Group Hub sessions
+
+## Messages [/hubs/{session_id}/messages]
+
+### Get messages [GET /hubs/{session_id}/messages/{max_count}]
+
+Required permission: *hubs_view*
+
++ Parameters
+    + max_count: 0 - Maximum number of most recent messages to return (0 = unlimited)
+
++ Response 200 (application/json)
+    + Attributes (array)
+        + (object)
+            + chat_message (Chat message)
+        + (object)
+            + status_message (Status message)
+
+### Clear message cache [DELETE]
+
+Required permission: *hubs_edit*
+
++ Response 204
+
+### Set all messages as read [POST /hubs/{session_id}/messages/read]
+
+Required permission: *hubs_view*
+
++ Response 204
+
+### Send chat message [POST /hubs/{session_id}/chat_message]
+
+Send a public chat message to this hub.
+
+Required permission: *hubs_send*
+
++ Request (application/json)
+    + Attributes (Chat message request)
+
++ Response 204
+
+### Send status message [POST /hubs/{session_id}/status_message]
+
+Send a status message message that is only shown locally in this hub.
+
+Required permission: *hubs_edit*
+
++ Request (application/json)
+    + Attributes (Status message request)
+
++ Response 204
+
+
+## Users [/hubs/{session_id}/users]
+
+
+### Get users [GET /hubs/{session_id}/users/{start}/{count}]
+
+Get a list of users that are currently online in this hub.
+
+Required permission: *hubs_view*
+
++ Parameters
+    + start: 0 - Index of the first item to return
+    + count: 100 - Maximum number of items to return, must be larger than 0
+
++ Response 200 (application/json)
+    + Attributes (array[Hub user])
+
+### Get user [GET /hubs/{session_id}/users/{cid}]
+
+Get user information by CID.
+
+Required permission: *hubs_view*
+
++ Response 200 (application/json)
+    + Attributes (Hub user)
+
+
+## Miscellaneous [/hubs/{session_id}/]
+
+
+### Send password [POST /hubs/{session_id}/password]
+
+Set the hub password. This should be used only when the hub is in *password* state. The password will be reused during the session lifetime in case the application gets disconnected from the hub.
+
+Required permission: *hubs_edit*
+
++ Request (application/json)
+    + Attributes
+        + password: myuniquepassword (required)
+
++ Response 204
+
+### Follow redirect [POST /hubs/{session_id}/redirect]
+
+Follow the redirection requested by the hub. This should be used only when the hub is in *redirect* state.
+
+Required permission: *hubs_edit*
+
++ Response 204
+
+### Reconnect [POST /hubs/{session_id}/reconnect]
+
+Reconnect to the hub.
+
+Required permission: *hubs_edit*
+
++ Response 204
+
+### Favorite [POST /hubs/{session_id}/favorite]
+
+Save the hub in favorites.
+
+Required permission: *hubs_edit*
+
++ Response 200 (application/json)
+    + Attributes (Favorite hub)
+
+### Get user and share counts [GET /hubs/{session_id}/counts]
+
+Get the current user and share counts.
+
+Required permission: *hubs_edit*
+
++ Response 200 (application/json)
+    + Attributes (Hub counts)
+
+
+## Event listeners [/hubs/{session_id}/listeners]
+
+All event listeners from hub entities are also available to be used across all sessions (add them with */hubs/listeners/event_name*).
+
+Required permission: *hubs_view*
+
+### Session updated [POST /hubs/{session_id}/listeners/hub_updated]
+
++ Response 200 (application/json)
+    + Attributes (Hub)
+
+### User/share counts updated [POST /hubs/{session_id}/listeners/hub_counts_updated]
+
++ Response 200 (application/json)
+    + Attributes (Hub counts)
+
+### Chat message received [POST /hubs/{session_id}/listeners/hub_message]
+
++ Response 200 (application/json)
+    + Attributes (Chat message)
+
+### Status message received [POST /hubs/{session_id}/listeners/hub_status]
+
++ Response 200 (application/json)
+    + Attributes (Status message)
+
+### Hub user connected [POST /hubs/{session_id}/listeners/hub_user_connected]
+
++ Response 200 (application/json)
+    + Attributes (Hub user)
+
+### Hub user updated [POST /hubs/{session_id}/listeners/hub_user_updated]
+
+Only the user ID and possibly changed fields are sent
+
++ Response 200 (application/json)
+    + Attributes (Hub user)
+
+### Hub user disconnected [POST /hubs/{session_id}/listeners/hub_user_disconnected]
+
++ Response 200 (application/json)
+    + Attributes (Hub user)
+
+
+
+
+# Group Private chat
+
+## Private chat [/private_chat]
+
+### Get a list of all private chat sessions [GET]
+
+Required permission: *private_chat_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Private chat])
+
+### Create session [POST]
+
+Create a new API session by providing the web user credentials.
+
+Required permission: *private_chat_edit*
+
++ Request (application/json)
+    + Attributes
+        + user (Hinted user base, required)
++ Response 200 (application/json)
+    + Attributes (Private chat)
+
+### Send chat message [POST /private_chat/chat_message]
+
+Send private chat message message to a specific user. This should generally be used for announcement-like messages only as private chat sessions are more suitable for bidirectional chatting.
+
+Required permission: *private_chat_send*
+
++ Request (application/json)
+    + Attributes (Private chat message request, required)
+
++ Response 204
+
+## Private chat session [/private_chat/{session_id}]
+
+### Get session [GET]
+
+Get a single session by ID.
+
+Required permission: *private_chat_view*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Private chat)
+
+### Update session [PATCH]
+
+**Minimum API feature level**: 1
+
+Update session properties.
+
++ Request (application/json)
+    + Attributes
+        + hub_url: adcs://myhub.com:6423 - URL of the hub to send the messages through
+
++ Response 204
+
+
+### Remove session [DELETE]
+
+Required permission: *private_chat_edit*
+
++ Response 204
+
+
+## Event listeners [/private_chat/listeners]
+
+All event listeners from private chat entities are also available to be used across all sessions (add them with */private_chat/listeners/event_name*).
+
+Required permission: *private_chat_view*
+
+### Private chat session created [POST /private_chat/listeners/private_chat_created]
+
++ Response 200 (application/json)
+
+    + Attributes (Private chat)
+
+### Private chat session removed [POST /private_chat/listeners/private_chat_removed]
+
++ Response 200 (application/json)
+    + Attributes (Private chat)
+
+
+## Validation hooks [/private_chat/hooks]
+
+Hooks should be used for validation purposes only. If just want to be notified about new private messages, you should use [event listeners](#reference/private-chat-sessions/event-listeners) instead.
+
+### Incoming chat message [POST /private_chat/hooks/private_chat_incoming_message_hook]
+
+Hook is fired for each incoming private chat message and can be used to prevent certain messages from being displayed to the user.
+
+Note that private chat session won't exist yet for private messages received from new users.
+
++ Response 200 (application/json)
+    + Attributes (Chat message)
+
+### Outgoing chat message [POST /private_chat/hooks/private_chat_outgoing_message_hook]
+
+Hook is fired for each outgoing private chat message and can be used to prevent certain messages from being sent.
+
+Note that private chat session may not exist for announcement-like messages that sent via the API.
+
++ Response 200 (application/json)
+    + Attributes (Private chat message request)
+
+
+## Data Structures
+
+### Private chat
+
++ id: NJSHVYR4ZHCZFUEZNGA7M2D72S5AB4WQAMPBKFA
++ user (Hinted user)
++ ccpm_state (object)
+    + id: connected (enum[string])
+        + connecting
+        + connected
+        + disconnected
+    + str: Connected
+    + encryption (Encryption, optional) - Available only with connected CCPM connections
++ message_counts (Chat message info)
+
+### Private chat message request (Chat message request)
+
++ user (Hinted user base, required)
++ echo: false (boolean, optional) - Echo the sent message back to me. This will always cause a new private chat session to be created and allows the message to be logged. Note that a private chat session will also be created if the other users replies to your message (or sends an away message).
+    + Default: false
+
+
+# Group Private chat sessions
+
+## Methods [/private_chat/{session_id}/]
+
+### Get messages [GET /private_chat/{session_id}/messages/{max_count}]
+
+Required permission: *private_chat_view*
+
++ Parameters
+    + max_count: 0 - Maximum number of most recent messages to return (0 = unlimited)
+
++ Response 200 (application/json)
+    + Attributes (array)
+        + (object)
+            + chat_message (Chat message)
+        + (object)
+            + status_message (Status message)
+
+### Send chat message [POST /private_chat/{session_id}/chat_message]
+
+Send private message to the user.
+
+Required permission: *private_chat_send*
+
++ Request (application/json)
+    + Attributes (Chat message request)
+
++ Response 204
+
+### Send status message [POST /private_chat/{session_id}/status_message]
+
+Send a status message that is only shown locally in this chat session.
+
+Required permission: *private_chat_edit*
+
++ Request (application/json)
+    + Attributes (Status message request)
+
++ Response 204
+
+### Clear message cache [POST /private_chat/{session_id}/clear]
+
+Required permission: *private_chat_edit*
+
++ Response 204
+
+### Set all messages as read [POST /private_chat/{session_id}/read]
+
+Required permission: *private_chat_view*
+
++ Response 204
+
+### Initiate CCPM connection [POST /private_chat/{session_id}/ccpm]
+
+Establish an encrypted client-to-client private messaging channel. CCPM is available only with users having the *ccpm* flag.
+
+Required permission: *private_chat_edit*
+
++ Response 204
+
+### Disconnect CCPM connection [DELETE /private_chat/{session_id}/ccpm]
+
+Disconnect encrypted client-to-client private messaging channel. Messages will be delivered through the hub after the channel has been disconnected.
+
+Required permission: *private_chat_edit*
+
++ Response 204
+
+
+## Event listeners [/private_chat/{session_id}/listeners]
+
+All event listeners from private chat entities are also available to be used across all sessions (add them with */private_chat/listeners/event_name*).
+
+Required permission: *private_chat_view*
+
+### Session updated [POST /private_chat/{session_id}/listeners/private_chat_updated]
+
++ Response 200 (application/json)
+    + Attributes
+        + session (Private chat)
+
+### Chat message received [POST /private_chat/{session_id}/listeners/private_chat_message]
+
++ Response 200 (application/json)
+
+    + Attributes (Chat message)
+
+### Status message received [POST /private_chat/{session_id}/listeners/private_chat_status]
+
++ Response 200 (application/json)
+    + Attributes (Status message)
+
+
+
+
+# Group Queue
+
+The download queue in AirDC++ is organized in bundles. A single bundle generally represents the item that was originally queued and it may be either a file or a directory.
+
+The download order of queued bundles is determined based on their priorities.
+
+### Directory bundles
+
+The content of a queued directory bundle is not static. You may queue new files/directories inside existing bundles and they will be merged into it based on the target path. Existing items may also be removed.
+
+Each file inside a directory bundle also has its own priority, that it being used to determine the file download order inside that particular bundle.
+
+It's beneficial to keep the content size (file and directory count) of a single bundle reasonable. When queuing new directories, you should avoid creating individual bundles containing hundreds of directories. Queueing directories that can be assumed to be found from other users with about the same tree structure will make adding of alternative sources easier and ensure smoother application performance.
+
+
+## Bundles [/queue/bundles]
+
+### Get bundles [GET /queue/bundles/{start}/{count}]
+
+Required permission: *queue_view*
+
++ Parameters
+    + start: 0 - Index of the first item to return
+    + count: 100 - Maximum number of items to return, must be larger than 0
+
++ Response 200 (application/json)
+    + Attributes (array[Queue bundle])
+
+### Remove completed bundles [POST /queue/bundles/remove_completed]
+
+Remove all bundles that have finished downloading and verified successfully.
+
+Required permission: *queue_edit*
+
++ Response 200 (application/json)
+    + Attributes
+        + count: 4 (number) - Number of bundles that were removed
+
+### Set bundle priorities [POST /queue/bundles/priority]
+
+Change the priority of all queued bundles.
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes
+        + priority (Queue priority ID, optional) - Auto priority will be enabled if no priority is supplied
+
++ Response 204
+
+### Create file bundle [POST /queue/bundles/file]
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes (Download params)
+        + priority (Queue priority ID, optional)
+        + size: 576345234 (number, required) - File size in bytes
+        + time: 1483611358 (number, optional) - Original file creation/modify time
+        + tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y (required)
+        + user (Hinted user base, optional) - Possible source user for this file
+        + target_name: Ubuntu 16.04.iso (required)
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle add info)
+
+### Create directory bundle [POST /queue/bundles/directory]
+
+Note: this method is generally meant for importing content from external sources into queue. When queueing directories from other users, you should generally use the respective API methods in Filelist and Search APIs.
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes (Download params)
+        + time: 1483611358 - Original directory creation/modify time (optional)
+        + files (array)
+            + (object)
+                + name: `CD1/Ubuntu 16.04.iso` (required) - File name that may also contain subdirectories relative to the main bundle path
+                + priority (Queue priority ID, optional) - File priority
+                + size: 576345234 (number, required) - File size in bytes
+                + tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y (required)
+
++ Response 200 (application/json)
+    + Attributes (Queue directory bundle add info)
+
+## Bundle [/queue/bundles/{bundle_id}]
+
+### Get bundle [GET]
+
+Required permission: *queue_view*
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Remove bundle [POST /queue/bundles/{bundle_id}/remove]
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes
+        + remove_finished: false (boolean, optional) - Remove finished bundle files
+            + Default: false
+
++ Response 204
+
+### Get bundle files [GET /queue/bundles/{bundle_id}/files/{start}/{count}]
+
+Required permission: *queue_view*
+
++ Parameters
+    + start: 0 - Index of the first item to return
+    + count: 100 - Maximum number of items to return, must be larger than 0
+
++ Response 200 (application/json)
+    + Attributes (array[Queue file])
+
+### Get bundle sources [GET /queue/bundles/{bundle_id}/sources]
+
+Required permission: *queue_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Queue bundle source])
+
+### Remove bundle source [DELETE /queue/bundles/{bundle_id}/sources/{cid}]
+
+Required permission: *queue_edit*
+
++ Response 200 (application/json)
+    + Attributes
+        + count: 4 (number) - Number of files from which the source was removed
+
+### Set bundle priority [POST /queue/bundles/{bundle_id}/priority]
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes
+        + priority (Queue priority ID, optional) - Auto priority will be enabled if no priority is supplied
+
++ Response 204 (application/json)
+
+### Search bundle for alternates [POST /queue/bundles/{bundle_id}/search]
+
+**File bundles**: the file TTH will be searched for.
+**Directory bundles**: 1-4 random bundle files are searched for. The number of files to search for depends on the bundle directory structure.
+
+Required permission: *queue_edit*
+
++ Response 200 (application/json)
+    + Attributes
+        + sent: 4 (number) - Number of bundle files that were searched for
+
+### Share a failed bundle [POST /queue/bundles/{bundle_id}/share]
+
+Attempt to add a failed bundle in share. This may used only for bundle that are in 'completion_validation_error' state.
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes
+        + skip_validation: false (boolean, optional) - Skip all validation hooks for completed bundles ('force')
+            + Default: false
+
++ Response 204
+
+
+## Files [/queue/files/{file_id}]
+
+### Remove file from queue [POST /queue/files/{file_id}/remove]
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes
+        + remove_finished: false (boolean, optional) - Remove possible finished file
+            + Default: false
+
++ Response 204
+
+### Set file priority [POST /queue/files/{file_id}/priority]
+
+Required permission: *queue_edit*
+
++ Request (application/json)
+    + Attributes
+        + priority (Queue priority ID, optional) - Auto priority will be enabled if no priority is supplied
+
++ Response 204 (application/json)
+
+### Search file for alternates [POST /queue/files/{file_id}/search]
+
+Required permission: *queue_edit*
+
++ Response 204 (application/json)
+
+### Get file sources [GET /queue/files/{file_id}/sources]
+
+Required permission: *queue_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Queue source])
+
+### Remove file source [DELETE /queue/files/{file_id}/sources/{cid}]
+
+Required permission: *queue_edit*
+
++ Response 204 (application/json)
+
+### Get file segments [GET /queue/files/{file_id}/segments]
+
+Required permission: *queue_view*
+
++ Response 200 (application/json)
+    + Attributes
+        + block_size: 524288 (number) - Block size of the tree used for validation (used for segment alignment). Total file size is used if there is no tree available.
+        + running (array[Queue segment]) - Running segments (entire segments)
+        + running_progress (array[Queue segment]) - Running segments (segment sizes based on the current progress)
+        + done (array[Queue segment]) - Completed segments
+
+
+## Generic methods [/queue]
+
+### Get dupe paths [POST /queue/find_dupe_paths]
+
+Get local paths for file/folder name/path or a TTH value.
+
++ Request (application/json)
+    + Attributes (object, required)
+        + One of
+            + path: /apps/Ubuntu/CD1/ - Individual file/folder name or path. Partial paths may also be supplied (e.g. Ubuntu/CD1/). The application will attempt to determine the relevant section from end to match.
+            + tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y - File TTH
+
++ Response 200 (application/json)
+    + Attributes (array[string])
+        + /home/airdcpp/share/Ubuntu/CD1/
+        + /mnt/disk2/share/Videos/Ubuntu/CD1/
+
+### Remove source [DELETE /queue/sources/{cid}]
+
+Remove source from all queued files.
+
+Required permission: *queue_edit*
+
++ Response 200 (application/json)
+    + Attributes
+        + count: 4 (number) - Number of files from which the source was removed
+
+
+## Bundle event listeners [/queue/listeners/queue_bundle]
+
+### Bundle added [POST /queue/listeners/queue_bundle_added]
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Bundle updated [POST /queue/listeners/queue_bundle_updated]
+
+Only the updated properties are sent.
+
+This listener generates a large number of event messages. If you are interested in specific types of updates only, you should generally use the other event listeners listed below.
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Bundle status changed [POST /queue/listeners/queue_bundle_status]
+
+Bundle status ID was changed.
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Bundle priority updated [POST /queue/listeners/queue_bundle_priority]
+
+Bundle priority was changed.
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Bundle download progress [POST /queue/listeners/queue_bundle_tick]
+
+Fired about once per second while there are downloads running.
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Bundle content updated [POST /queue/listeners/queue_bundle_content]
+
+Bundle files were added or removed (directory bundles only).
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Bundle sources updated [POST /queue/listeners/queue_bundle_sources]
+
+Bundle sources were updated.
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+### Bundle removed [POST /queue/listeners/queue_bundle_removed]
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+
+## File event listeners [/queue/listeners/queue_file]
+
+Subscriptions for individual queued files.
+
+### File added [POST /queue/listeners/queue_file_added]
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+### File updated [POST /queue/listeners/queue_file_updated]
+
+Only the updated properties are sent.
+
+This listener generates a large number of event messages. If you are interested in specific types of updates only, you should generally use the other event listeners listed below.
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+### File priority updated [POST /queue/listeners/queue_file_priority]
+
+File priority was changed.
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+### File download progress [POST /queue/listeners/queue_file_tick]
+
+Fired about once per second while there are downloads running.
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+### File sources updated [POST /queue/listeners/queue_file_sources]
+
+File sources were updated.
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+### File status changed [POST /queue/listeners/queue_file_status]
+
+Generic update event for other file status updates.
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+### File removed [POST /queue/listeners/queue_file_removed]
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+
+## Validation hooks [/queue/hooks]
+
+Bundle/file completion hooks can be used for performing various content validations. Possible error returned by the hook is saved for the respective item and is also visible to the user.
+
+`hook_validation_error` state is set for failed items and the full error is available from the `hook_error` status field. The [share](#reference/queue/bundle/share-a-failed-bundle) method can be used to revalidate failed bundles.
+
+**Note that the hooks should be used for content validation purposes only**. If you just want to know when a file/bundle has completed downloading, you should use the respective status event listeners ([bundles](#reference/queue/bundle-event-listeners/bundle-status-changed), [files](#reference/queue/file-event-listeners/file-status-changed)) and check the ID of the new status instead.
+
+
+### File finished [POST /queue/hooks/queue_file_finished_hook]
+
+The hook is fired for each bundle file that finishes downloading.
+
++ Response 200 (application/json)
+    + Attributes (Queue file)
+
+### Bundle finished [POST /queue/hooks/queue_bundle_finished_hook]
+
+The hook is fired for each bundle that finishes downloading.
+
++ Response 200 (application/json)
+    + Attributes (Queue bundle)
+
+
+## Data Structures
+
+### Queue bundle add info
+
++ id: 83425443 (number) - Bundle ID
++ merged: true (boolean) - Indicates whether this is a new bundle or was the queued item merged into an existing one
+
+### Queue directory bundle add info
+
++ files_queued: 14 (number) - Number of new files that were queued successfully
++ files_updated: 34 (number) - Number of existing files that were possibly updated (new source was added)
++ files_failed: 1 (number) - Number of files that could not be queued
++ error: `A file with different TTH root already exists in the queue (affected file(s): Ubuntu 14.04.nfo)`
++ bundle (Queue bundle add info)
+
+### Queue item base
+
++ size: 62523525626 (number) - Size in bytes
++ downloaded_bytes: 4521124 (number)
++ priority (Queue priority)
++ time_added: 65235235 (number)
++ time_finished: 0 (number) - Time when the item was finished (0 = not finished)
++ speed: 5234324 (number) - Current download speed, bytes per second
++ seconds_left: 632576 (number) - Seconds left based on the current download speed
+
+### Queue bundle (Queue item base)
+
++ id: 83425443
++ name: Ubuntu
++ target: /home/airdcpp/share/Ubuntu/
++ type (File item type)
++ sources (Queue bundle source)
++ status
+    + id: queued (enum[string])
+         + new - Not added in queue yet
+         + queued - Queued
+         + download_error - Download can't be continued because of a fatal error (such as there is no available disk space)
+         + recheck
+         + downloaded - All files have completed downloading
+         + completion_validation_running - The bundle is being validated by custom completion hooks
+         + completion_validation_error - An error was triggered by a custom completion hook. See the field 'hook_error' for more detailed information
+         + completed - All completion hooks have completed successfully
+         + shared - The bundle has been added in share
+    + failed: false (boolean) - Whether the bundle is in an error state
+    + downloaded: false (boolean) - All files have finished downloaded (states 'downloaded' and above)
+    + completed: false (boolean) - All files have finished downloaded and the content was verified (states 'completed' and 'shared')
+    + str: `Running (42.3%)`
+    + hook_error (nullable)
+        + hook_id: share_scanner
+        + hook_name: Share scanner
+        + error_id: files_missing
+        + str: 42 missing files
+
+### Queue file (Queue item base)
+
++ id: 23425443
++ name: Ubuntu 14.04.iso
++ target: /home/airdcpp/share/Ubuntu/Ubuntu 14.04.iso
++ type (File type)
++ bundle: 83425443 (number) - Bundle (0 = no bundle)
++ status
+    + str: `Running (42.3%)`
+    + downloaded: false (boolean) - All file segments have finished downloading
+    + completed: false (boolean) - All file segments have finished downloading and the item has been renamed to use its final name (and possibly verified)
++ tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y - File TTH
++ sources (Queue source info)
+
+### Queue segment
+
++ start: 13631488 (number) - Start position of the segment (bytes)
++ size: 524288 (number) - Size of the segment (bytes)
+
+### Queue source
+
++ user (Hinted user)
++ last_speed: 57453654 (number) - Last known total speed from the user, bytes per second
+
+### Queue bundle source (Queue source)
+
++ files: 53 (number) - Bundle files remaining from this source
++ size: 734234563 (number) - Total number of bytes remaining from this source
+
+### Queue source info
+
++ online: 2 (number) - Number of sources online
++ total: 3 (number) - Total number of item sources
++ str: 2/3 online
+
+### Queue priority
+
++ id (Queue priority ID)
++ str: Paused
++ auto: false (boolean) - Auto priority state
+
+
+
+
+# Group Searching
+
+
+## Introduction
+
+Search matching in Direct Connect is a distibuted operation: search queries are sent to other hub users who match will match them against their own shared items. If you are in active connectivity
+mode, they will send the possible search results directly to you via UDP (passive results are sent via hubs instead).
+
+This also means that you can't simply just post a search and receive the results instantly as part of the response. Instead, you'll need to create a search instance for the search that will
+take care of collecting results of that particular search and keeps them available to be fetched later.
+
+Basic code example for searching:
+
+```javascript
+
+// Create a new search instance
+const instance = await api.post('search')
+
+// Post the search
+const searchInfo = await api.post(`search/${instance.id}/hub_search`, {
+  query: {
+    pattern: pattern,
+  },
+})
+
+// Collect the results for 10 seconds before fetching them
+await sleep(10000)
+
+// Fetch the five most relevant results
+const results = await api.get(`search/${instance.id}/results/0/5`)
+
+// .... do something with them
+
+```
+
+(there are some caveats in the example that are explained later)
+
+## Performance considerations
+
+### Effect to hubs
+
+When searching for "Ubuntu 14.04" with "iso" file extension in an ADC hub, the resulting protocol message that is being forwareded to all users by the hub would look similar to this:
+
+`BSCH CLEF TO3/903088317 ANubuntu AN14.04 EXiso`
+
+In a hub with 5000 users, the total amount of uncompressed data to be sent by the hub would be 230 kilobytes. If the searching user is in passive mode, all search forwarded replies would increase the total data amount even more.
+
+### Effect to other users
+
+There's a huge variation of share sizes among the users. The only metrics that matters in terms of search matching performance is user's total file/directory count. Matching a share with 10000 files won't be a big deal,
+but the total matching time will be totally different with 5 million files.
+
+TTH searches are generally cheap since clients maintain an index of shared files by their TTH values from which the searches are matched from.
+
+When performing text searches with partial matching, no such index exists. Various clients use [bloom filters](https://en.wikipedia.org/wiki/Bloom_filter) to cheaply filter out text searches that are guaranteened not to match
+any shared items, that will work quite well especially with longer seach terms. If an average length of a shared item is 43 characters (43 bytes for ASCII-only names), the total amount of text to match with 5 million shared files
+would be 215 megabytes (given that the whole share needs to matched).
+
+
+## Search queues
+
+Because of the performance considerations listed in the earlier section, hubs will generally limit the amount of searches that users may perform and spamming the hub with a large number of searches may cause the user
+to get kicked out.
+
+Searches performed by the client will originate from many different sources (manual searches, searches for alternate queue sources and API scripts...). In order to prevent a large number of searches being sent within a short amount of time,
+the application will maintain queues for outgoing searches on per-hub basis.
+
+The position of a search in the search queue is determined by its priority, which allows minimizing the waiting times for more urgent searches (such as manual ones made from the UI).
+Since higher priority searches may be added in queue before the existing ones, the actual time when the search will be sent is not known at the time when it's being queued.
+
+When using Websockets, there's a 'search_hub_searches_sent' that will be fired after the search has been sent to all hubs. Here's a snippet of a subscription-based search function for [airdcpp-apisocket](https://github.com/airdcpp-web/airdcpp-apisocket-js):
+
+```javascript
+
+// Create a new search instance
+const instance = await socket.post('search')
+
+// Add listener for the 'searches sent' event before performing the actual search
+socket.addListener(`search/${instance.id}`, 'search_hub_searches_sent', searchInfo => {
+  // Collect the results for 5 seconds before fetching them
+  await sleep(5000)
+
+  // .... fetch and do something with them
+})
+
+// Perform the search
+socket.post(`search/${instance.id}/hub_search`, {
+  query: {
+    pattern: pattern,
+  },
+  priority: 1, // Lowest (1-5)
+})
+
+```
+
+[Complete example extension](https://github.com/airdcpp-web/airdcpp-extension-js/blob/master/examples/airdcpp-auto-downloader.js)
+
+HTTP users may also check the search instance object to see the current queue time or time ellapsed from the search.
+
+Note that the application may also choose reject new searches in order to prevent the search queue from growing indefinitely. Therefore, you should
+use some consideration regarding the number of searches that you really need to perform.
+
+
+## Search instances [/search]
+
+### Get a list of all search instances [GET]
+
+Required permission: *search*
+
++ Response 200 (application/json)
+    + Attributes (array[Search instance])
+
+
+### Create instance [POST]
+
+Required permission: *search*
+
++ Request (application/json)
+    + Attributes
+        + expiration_minutes: 60 (number, optional) - Time in minutes after which the instance will be removed automatically (0 = no expiration). Counted from the time of creation.
+            + Default: 60
++ Response 200 (application/json)
+    + Attributes (Search instance)
+
+### Get instance [GET /search/{instance_id}]
+
+Get a single instance by ID.
+
+Required permission: *search*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Search instance)
+
+### Remove instance [DELETE /search/{instance_id}]
+
+Required permission: *search*
+
++ Response 204
+
+
+## Miscellaneous [/search/types]
+
+### Search types [GET /search/types]
+
+Return all search types
+
++ Response 200 (application/json)
+    + Attributes (array)
+        + (object)
+            + id: 1
+            + str: Audio
+            + extensions: ape, flac, m4a, mid, mp3, mpc, ogg, ra, wav, wma
+            + default_type: true (boolean) - This is an inbuilt type that can't be removed (extensions can still be modified)
+
+## Event listeners [/search/listeners]
+
+All event listeners from search instances are also available to be used across all instances (add them with */search/listeners/event_name*).
+
+Required permission: *search*
+
+## Data Structures
+
+### Search instance
+
++ id: 0 (number)
++ expires_in: 60000 (number) - Time in milliseconds until the instance expires
++ current_search_id: 643345 - ID of the previously sent search
++ queue_time: 0 - Current queue time in milliseconds for the previously sent search (hub searches only)
++ queued_count: 0 - Number of hub searches that haven't been sent yet (hub searches only)
++ result_count: 3153 - Number of received results
++ searches_sent_ago: 47243 - Milliseconds ellapsed since the previous search was sent
+
+### Grouped search result
+
++ id: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y
++ name: dir
++ relevance: 1.34 (number) - Calculated item relevance based on the result name and number of hits
++ hits: 4 (number) - Number of users (child users) from who the item was found
++ users
+    + count: 4 (number)
+    + user (Hinted user) - Base user from who the result name and path were picked from
++ type (File item type) - Directory content information (files and directories) is available from certain ADC users only
++ path: /home/airdcpp/share/dir/ - Path in remote user's share
++ tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y
++ dupe (Dupe, nullable)
++ time: 1483611358 (number) - File creation/modification date. The oldest found date is shown for parent results. Available from certain ADC users only.
++ slots (Slot count) - Accummulated slot counts from users
++ connection: 42500000 (number) - Accummulated connection speed from users, bytes per second
++ size: 62523525626 (number) - Size in bytes (not available for NMDC directory results)
+
+### Child search result
+
++ id: 427 (number)
++ path: /Linux/Ubuntu 14.04/ - Path in remote user's share
++ user (Hinted user)
++ slots (Slot count)
++ time: 1483611358 (number) - File creation/modification date. Available from certain ADC users only.
++ connection: 12500000 (number)  - Connection speed, bytes per second
++ ip (IP)
+
+### Slot count
+
++ free: 2 (number)
++ total: 11 (number)
++ str: 2/11
+
+
+
+# Group Search instances
+
+## Search [/search/{instance_id}]
+
+### Perform hub search [POST /search/{instance_id}/hub_search]
+
+Search files from all connected (or separately specified) hubs. This will cancel possible hub searches that were queued earlier and clear the cached results.
+
+Required permission: *search*
+
++ Request (application/json)
+    + Attributes
+        + query (Search query, required)
+        + priority (Priority ID, optional) - Priority in the outgoing search queue. Priorities above 'Normal' shouldn't be used for background searches to avoid delaying manual searches performed from the UI. Defaults to 'Low'.
+            + Default: 2
+        + hub_urls: adcs://myhub.com:6423, mynmdchub.com (optional) - A list of hub URLs where the search should be sent to. Search will be sent to all connected hubs if this field is not provided.
+
++ Response 200 (application/json)
+    + Attributes
+        + queue_time: 5000 (number) - Current queue time for this search in milliseconds. Given that this is not a manual search, higher priority searches that are queued after this one may increase the waiting time even more.
+        + search_id: 643345 (number) - An individual search ID for this query
+        + queued_count: 3 (number) - Number of hubs for which the search was queued
+
+### Perform user search [POST /search/{instance_id}/user_search]
+
+Search files from an individual user. The search will be sent instantly without queueing. This will cancel possible hub searches that were queued earlier and clear the cached results.
+
+This method can be used with ADC users only ([all hubsofts may not deliver the searches correcly](https://airdcpp-web.github.io/docs/general/running-a-hub.html)).
+
+Options specified in the 'options' field are available only with users having the *asch* flag.
+
+Required permission: *search*
+
++ Request (application/json)
+    + Attributes
+        + query (Search query, required)
+        + user (Hinted user base, required)
+        + options (optional)
+            + max_results: 20 (optional, number) - Maximum number of results to return. Note that the responding client may not obey large maximum result limits.
+                + Default: 5
+            + path: /Videos/video1/ (optional) - Directory in remote user's share in which the search should be performed
+                + Default: /
+
++ Response 204
+
+## Results [/search/{instance_id}/results]
+
+### Get results [GET /search/{instance_id}/results/{start}/{count}]
+
+Get results for the previously posted search query. Results are sorted by relevance (the most relevant result is sorted first).
+
+All individual user results are grouped based on the following conditions
+
+- Files are grouped based on their TTH values
+- ADC directory results are grouped based on the combination of exact size and directory name
+- NMDC directory results are not grouped
+
+Required permission: *search*
+
++ Parameters
+    + start: 0 - Index of the first item to return
+    + count: 100 - Maximum number of items to return, must be larger than 0
+
++ Response 200 (application/json)
+    + Attributes (array[Grouped search result])
+
+
+### Get result [GET /search/{instance_id}/results/{result_id}]
+
+Get a single result
+
+Required permission: *search*
+
++ Response 200 (application/json)
+    + Attributes (Grouped search result)
+
+
+### Download result [POST /search/{instance_id}/results/{result_id}/download]
+
+Queue the specified result. If there is a large number of users sharing the same item, the application will pick the fastest ones automatically.
+
+Required permission: *download*
+
++ Request (application/json)
+    + Attributes (Download params)
+        + target_name: Ubuntu (optional) - Name of the search result will be used if not specified
+
++ Response 200 (application/json)
+    + Attributes
+        + One of (object)
+            + bundle_info (Queue bundle add info) - Response for file downloads
+            + directory_downloads (array[Directory download item]) - Response for directory downloads
+
+
+### Get child user results [GET /search/{instance_id}/results/{result_id}/children]
+
+Get a list of individual user results.
+
+Required permission: *search*
+
++ Response 200 (application/json)
+    + Attributes (array[Child search result])
+
+
+## Event listeners [/search/{instance_id}/listeners]
+
+All event listeners from search instances are also available to be used across all instances (add them with */search/listeners/event_name*).
+
+Required permission: *search*
+
+### Hub searches sent [POST /search/{instance_id}/listeners/search_hub_searches_sent]
+
+Fired after all queued searches were sent.
+
++ Response 200 (application/json)
+    + Attributes
+        + sent: 4 (number) - Number of searches that were sent (this may also be 0 if all hubs were closed)
+        + search_id: 643345 - ID of the search that was sent
+
+### Grouped result added [POST /search/{instance_id}/listeners/search_result_added]
+
++ Response 200 (application/json)
+    + Attributes (Grouped search result)
+
+### Grouped result updated [POST /search/{instance_id}/listeners/search_result_updated]
+
++ Response 200 (application/json)
+    + Attributes (Grouped search result)
+
+### User result received [POST /search/{instance_id}/listeners/search_user_result]
+
++ Response 200 (application/json)
+    + Attributes (Child search result)
+
+
+
+# Group Sessions
+
+Session API provides methods for authentication and generic session management
+
+## Authentication [/sessions/authorize]
+
+### Create session [POST]
+
+Create a new API session by providing the web user credentials.
+
++ Request (application/json)
+    + Attributes
+        + username: user1 (required)
+        + password: password (required)
+        + max_inactivity: 60 (number, optional) - Time in minutes after which the session is invalidated if there is no activity. Note that sessions with a connected websocket won't expire. The default session inactivity timeout can be configured from web server settings.
+            + Default: 20
++ Response 200 (application/json)
+    + Attributes (Authentication info)
+
+### Socket [POST /sessions/socket]
+
+Associate socket with an existing session.
+
++ Request (application/json)
+    + Attributes
+        + auth_token: `25793d1e-6d48-407c-9c27-a9dcbd2e1188` (required) - Session identifier token
+
++ Response 200 (application/json)
+    + Attributes (Authentication info)
+
+## Current session [/sessions/self]
+
+### Get current session [GET]
+
+Get the current session entity
+
++ Response 200 (application/json)
+    + Attributes (Session)
+
+### Activity [POST /sessions/activity]
+
+Notify the application about user activity or ensure that HTTP session won't expire.
+
++ Request (application/json)
+    + Attributes
+        + user_active: false (boolean, optional)
+
+          Specifies whether the user has been active since the last activity report. This information is used for calculating the away state of the application. Scripts that don't involve user interaction shouldn't provide this attribute.
+
+          + Default: false
+
++ Response 204
+
+### Remove current session [DELETE]
+
+Invalidate the current session (log out). This method is not available when using Basic HTTP authentication.
+
++ Response 204
+
+## Sessions [/sessions]
+
+### Get sessions [GET]
+
+Get a list of current web server sessionsURL
+
+Required permission: *admin*
+
++ Response 200 (application/json)
+    + Attributes (array[Session])
+
+
+## Session [/sessions/{session_id}]
+
+### Remove session [DELETE]
+
+Invalidate a session by ID
+
+Required permission: *admin*
+
++ Response 204
+
+### Get session [GET]
+
+Get a session by ID
+
+Required permission: *admin*
+
++ Response 200 (application/json)
+    + Attributes (Session)
+
+
+## Event listeners [/sessions/listeners]
+
+Required permission: *admin*
+
+### Session created [POST /sessions/listeners/session_created]
+
++ Response 200
+    + Attributes
+        + session (Session)
+
+### Session removed [POST /sessions/listeners/session_removed]
+
++ Response 200 (application/json)
+    + Attributes
+        + session (Session)
+
+## Data Structures
+
+### Session
+
++ id: 143743423 (number) - Session ID (this is not the same as auth token that is sent only in the authentication response)
++ ip: [::1] - Last IP address used for the connection (IPv4/IPv6)
++ last_activity: 6236 (number) - Milliseconds since last session activity
++ type: secure (enum[string])
+  + basic_http
+  + plain
+  + secure
++ user (Web user) - Web user account used for authentication
+
+### Authentication info
+
++ auth_token: `25793d1e-6d48-407c-9c27-a9dcbd2e1188` - Authorization token
++ system_info (System info) - Generic information about the system that the application is running on
++ user (Web user) - Current web user
++ wizard_pending: false (boolean) - Whether completion of the initial configuration wizard is pending
+
+
+# Group Settings
+
+Settings API can be used for viewing and managing of web server and core application settings.
+
+## Settings [/settings]
+
+### Get setting values [POST /settings/get]
+
++ Request (application/json)
+    + Attributes (array[string])
+        + keys: download_limit_main, upload_limit_main (array[string]) - Array of setting keys
+
++ Response 200 (application/json)
+    + Attributes (array[string, boolean, number])
+        + 100 (number)
+        + 0 (number)
+
+### Set setting values [POST /settings/set]
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes (object)
+
+        Key-value listing of setting keys and their new values
+
+        + download_limit_main: 0 (number)
+        + upload_limit_main: 250 (number)
+
++ Response 204
+
+
+### Reset setting values [POST /settings/reset]
+
+Reset the specified settings to use their default values.
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes (array[string])
+        + keys: download_limit_main, upload_limit_main (array[string]) - Array of setting keys
+
++ Response 204
+
+
+### Get setting definitions [POST /settings/definitions]
+
+Get schema information of the specified settings.
+
++ Request (application/json)
+    + Attributes
+        + keys: download_limit_main, upload_limit_main (array[string]) - Array of setting keys
+
++ Response 200 (application/json)
+    + Attributes (array)
+        + (object)
+            + download_limit_main (Setting definition)
+
+
+## Data Structures
+
+### Setting definition base
+
++ key: download_limit_main
++ title: `Download limit (KiB/s, 0 = disabled)` - Setting field title
++ help: Set the total speed limit for downloads (optional) - Additional help message
++ optional: false (boolean, optional) - Whether the setting is optional
++ type (Setting type base) - Value type
+    + boolean - Boolean field
+    + list - List with items defined by the 'item_type' field
++ item_type (Setting type base, optional) - List item value type. Required for 'list' type settings.
+    + struct - List items with subproperties configured in the 'definitions' field
+
++ options (array, optional) - Optional value selection options for enum-type settings. Options may also be specified for string and number lists when multiselect component should be used.
+    + (object)
+        + id (enum)
+            + (string)
+            + (number)
+        + name
++ min: 1 (number, optional) - Minimum allowed value (numeric types only), default is 0
++ max: 100 (number, optional) - Maximum allowed value (numeric types only)
++ default_value: 0 (Setting value) - Default value
+
+### Setting definition (Setting definition base)
+
++ definitions (array[object]) - Property definitions for list items (required when using the 'list' type with 'struct' items)
+
+### Setting type base (enum[string])
+
++ number - Numeric (integer) field
++ string - Regular string field
++ file_path - File path selector
++ directory_path - Directory path selector
++ text - Field for longer text content
+
+### Setting value (enum)
+
++ (string)
++ (number)
++ (boolean)
++ (array[string])
++ (array[number])
++ (array[object])
+
+
+
+### Connectivity mode (enum[number])
+
++ `-1` - Disabled
++ 0 - Active mode (no router or manual router configuration)
++ 1 - Active mode with NAT-PMP / UPnP (let the client configure my router)
++ 2 - Passive mode (last resort - has serious limitations)
+
+
+
+
+# Group Share
+
+## Excludes [/share/excludes]
+
+### List excluded paths [GET]
+
+Required permission: *share_view*
+
++ Response 200 (application/json)
+    + Attributes (array[string])
+        + /home/airdcpp/share/Videos/secret/
+        + /mnt/disk2/share/Videos/secret/
+
+### Add excluded path [POST /share/excludes/add]
+
+Required permission: *share_edit*
+
++ Request (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Videos/secret/ (required) - Path to exclude
+
++ Response 204
+
+### Remove excluded path [POST /share/excludes/remove]
+
+Required permission: *share_edit*
+
++ Request (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Videos/secret/ (required) - Excluded path to remove
+
++ Response 204
+
+## Temp shared files [/temp_shares]
+
+**Minimum API feature level**: 2
+
+### List temp shares [GET]
+
+Required permission: *share_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Temp share item])
+
+### Add temp share [POST]
+
+Required permissions: *share_edit*, *filesystem_edit*
+
+Binary content of all temp shared files must first be uploaded to *APPLICATION_URL/temp* (use *POST* method and set the binary content of the file as body). **Authorization** header containing the session token must be present in the request.
+
+ID of the uploaded file will be returned in the **Location** response header, which is needed when using this method.
+
++ Request (application/json)
+    + Attributes
+        + file_id: 51864326 (string, required) - ID of the uploaded file
+        + name: image1.png (string, required) - Display name
+        + hub_url: adcs://myhub.com:6423 (string, required) - URL of the hub where the file will be shared. This will be only used to check existing TTH matches from the share profile used in the specified hub.
+        + cid: NJSHVYR4ZHCZFUEZNGA7M2D72S5AB4WQAMPBKFA (string) - Possible CID of the user who will only be able to download the file (file will be available to all users if no CID is specified)
+
++ Response 200 (application/json)
+    + Attributes
+        + magnet: magnet:?xt=urn:tree:tiger:CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y&xl=7524332&dn=image1.png - Magnet URI of the temp share item
+        + item (Temp share item) - Create temp share item. If the item is null, a file with the same TTH was already found from the share.
+
+
+### Remove temp share [DELETE /share/temp_shares/{item_id}]
+
+Required permission: *share_edit*
+
++ Parameters
+    + item_id: 51864326 (required) - Temp share item ID
+
++ Response 204
+
+
+## Generic methods [/share]
+
+### Grouped share roots [GET /share/grouped_root_paths]
+
++ Response 200 (application/json)
+    + Attributes (array[Grouped path])
+
+### Refresh whole share [POST /share/refresh]
+
+Required permission: *share_edit*
+
++ Response 204
+
+### Refresh real paths [POST /share/refresh/paths]
+
+Required permission: *share_edit*
+
++ Request (application/json)
+    + Attributes
+        + paths: /home/airdcpp/share/Videos/video1/, /home/airdcpp/share/Videos/video2/ (required) - Paths to refresh (they all must be found from share)
+
++ Response 204
+
+### Refresh virtual path [POST /share/refresh/virtual]
+
+Required permission: *share_edit*
+
++ Request (application/json)
+    + Attributes
+        + path: /Videos/ (required) - Virtual path to refresh
+
++ Response 204
+
+### Get dupe paths [POST /share/find_dupe_paths]
+
+Get local paths for file/folder name/path or a TTH value.
+
++ Request (application/json)
+    + Attributes (object, required)
+        + One of
+            + path: /apps/Ubuntu/CD1/ - Individual file/folder name or path. Partial paths may also be supplied (e.g. Ubuntu/CD1/). The application will attempt to determine the relevant section from end to match.
+            + tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y - File TTH
+
++ Response 200 (application/json)
+    + Attributes (array)
+        + /home/airdcpp/share/Ubuntu/CD1/
+        + /mnt/disk2/share/Ubuntu/CD1/
+
+### Search files [POST /share/search]
+
+Search for shared files.
+
++ Request (application/json)
+    + Attributes (object, required)
+        + query (Search query, required)
+        + share_profile: 7453466 (number, optional) - Items will be searched for from whole share if no profile is specified.
+
++ Response 200 (application/json)
+    + Attributes (array[Share item])
+
+### Stats [GET /share/stats]
+
+Required permission: *share_view*
+
++ Response 200 (application/json)
+
+### Validate path [GET /share/validate_path]
+
+Validate a path of an existing file/directory.
+
++ Request (application/json)
+    + Attributes (object, required)
+        + path: /home/airdcpp/share/Ubuntu/CD1/ - File/directory path
+        + skip_check_queue: false (boolean, optional) - Don't fail when checking files that are inside an incomplete bundlecomminicatio.
+            + Default: false
+
++ Response 204
++ Response 403
+
+    Validation failed (non-temporary failure)
+
+    + Body
+
+            Forbidden file extension
+
++ Response 409
+
+    The path is inside an incomplete bundle (temporary failure)
+
+    + Body
+
+            Directory is inside an unfinished bundle
+
+
+## Event listeners [/share/listeners]
+
+Required permission: *settings_view*
+
+### Share refresh queued [POST /share/listeners/share_refresh_queued]
+
+Fired when share refresh (partial or full refresh) was queued.
+
++ Response 200 (application/json)
+    + Attributes (Share refresh info)
+
+### Share refresh completed [POST /share/listeners/share_refresh_completed]
+
+Fired when share refresh (partial or full refresh) was completed.
+
++ Response 200 (application/json)
+    + Attributes (Share refresh info)
+
+### Excluded path added [POST /share/listeners/share_exclude_added]
+
++ Response 200 (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Videos/secret/
+
+### Excluded path removed [POST /share/listeners/share_exclude_removed]
+
++ Response 200 (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Videos/secret/
+
+
+## Validation hooks [/share/hooks]
+
+Validation hooks are fired for each file/directory that is found while refreshing the share. Due to possible increased refresh times, you shouldn't perform any long-running operations in the validation hooks.
+
+### File validation hook [POST /share/hooks/share_file_validation_hook]
+
+The hook is fired for each file that is being validated (rejected files won't be shared).
+
++ Response 200 (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Ubuntu/CD1/Ubuntu CD1.iso - Full file path
+        + size: 62523525626 (number) - File size (bytes)
+
+### Directory validation hook [POST /share/hooks/share_directory_validation_hook]
+
+The hook is fired for each directory that is being validated (rejected directories won't be shared).
+
++ Response 200 (application/json)
+    + Attributes
+        + path: /home/airdcpp/share/Ubuntu/CD1/ - Full directory path
+
+
+## Data Structures
+
+### Share refresh info
+
++ real_paths: /home/airdcpp/share/, /mnt/disk2/share/ (array)
++ type (enum[string])
+    + add_directory - A new share directory was scanned and is now visible in shared
+    + add_bundle - Downloaded bundle was added in share
+    + refresh_all - Whole share was refreshed
+    + refresh_directories - Custom share paths were refreshed
+    + refresh_incoming - Share roots marked as incoming were refreshed
+
+### Share item
+
++ id: 427 (number)
++ name: Ubuntu 14.04
++ virtual_path: /Linux/Ubuntu 14.04/
++ real_paths: /home/airdcpp/share/Linux/Ubuntu 14.04/ (array)
++ type (File item type)
++ time: 1483611358 (number) - Modification date
++ tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y
++ size: 62523525626 (number) - Size in bytes
+
+### Temp share item
+
++ id: 624563154
++ name: image1.png - Display name
++ path: /tmp/54332674327 - Path on disk
++ size: 7524332 - File size
++ tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y
++ time_added: 1483611358 (number) - Time when the file was added in temp share
++ type (File item type)
++ user (User) - Possible user who is able to access the file. If no user is set, the file can be found by everyone.
+
+# Group Share profiles
+
+Share profiles can be used to share different content in ADC hubs (hub preferences are configured from favorite hubs). NMDC hubs will always use the default share profile.
+
+## Profiles [/share_profiles]
+
+### List share profiles [GET]
+
++ Response 200 (application/json)
+    + Attributes (array[Share profile])
+
+### Add share profile [POST]
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes
+        + name: Video only (required) - Name of the profile
+
++ Response 200 (application/json)
+    + Attributes (Share profile)
+
+## Profile [/share_profiles/{profile_id}]
+
+### Get share profile [GET]
+
++ Response 200 (application/json)
+    + Attributes (Share profile)
+
+### Get default share profile [GET /share_profiles/default]
+
++ Response 200 (application/json)
+    + Attributes (Share profile)
+
+### Update share profile [PATCH]
+
+Required permission: *settings_edit*
+
++ Parameters
+    + profile_id: 7453466 (required)
+
++ Request (application/json)
+    + Attributes
+        + name: Videos only - Name of the profile
+
++ Response 200 (application/json)
+    + Attributes (Share profile)
+
+### Set default share profile [POST /share_profiles/{profile_id}/default]
+
+Set this profile as default.
+
+Required permission: *settings_edit*
+
++ Response 204
+
+### Remove share profile [DELETE]
+
+Note that the current default profile can't be removed (you must set a new default profile first).
+
+Required permission: *settings_edit*
+
++ Parameters
+    + profile_id: 7453466 (required)
+
++ Response 204
+
+
+## Event listeners [/share_profiles/listeners]
+
+### Share profile added [POST /share_profiles/listeners/share_profile_added]
+
++ Response 200 (application/json)
+    + Attributes (Share profile)
+
+### Share profile updated [POST /share_profiles/listeners/share_profile_updated]
+
++ Response 200 (application/json)
+    + Attributes (Share profile)
+
+### Share profile removed [POST /share_profiles/listeners/share_profile_removed]
+
++ Response 200 (application/json)
+    + Attributes (Share profile)
+
+
+## Data structures
+
+### Share profile
+
++ id: 7453466 (number)
++ name: Videos only
++ str: `Videos only (default)`
++ `default`: true (boolean) - Specifies whether this is the default share profile
++ size: 74655272532 (number) - Total size of shared files in this profile in bytes
++ files: 24643 (number) - Total number of shared files in this profile
+
+### Share profile basic
+
++ id: 7453466 (number)
++ str: `Videos only (default)`
+
+
+# Group Share roots
+
+
+
+## Share roots [/share_roots]
+
+### List share roots [GET]
+
+Get a list of all shared root directories.
+
+Required permission: *settings_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Share root])
+
+### Create share root [POST]
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes (Share root request)
+        + path: /home/airdcpp/share/Linux/Ubuntu 14.04/ (required) - Local directory path
+
++ Response 200 (application/json)
+    + Attributes (Share root)
+
+## Share root [/share_roots/{root_id}]
+
+### Update share root [PATCH]
+
+Update the specified fields of a share root
+
+Required permission: *settings_edit*
+
++ Request (application/json)
+    + Attributes (Share root request)
+
++ Response 200 (application/json)
+    + Attributes (Share root)
+
+### Get share root [GET]
+
+Get a single root by ID.
+
+Required permission: *settings_view*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+    + Attributes (Share root)
+
+### Remove share root [DELETE]
+
+Required permission: *settings_edit*
+
++ Response 204
+
+
+## Event listeners [/share_roots/listeners]
+
+Required permission: *settings_view*
+
+### Share root created [POST /share_roots/listeners/share_root_created]
+
++ Response 200 (application/json)
+    + Attributes (Share root)
+
+### Share root updated [POST /share_roots/listeners/share_root_updated]
+
+Only the updated properties are sent.
+
++ Response 200 (application/json)
+    + Attributes (Share root)
+
+### Share root created [POST /share_roots/listeners/share_root_removed]
+
++ Response 200 (application/json)
+    + Attributes (Share root)
+
+## Data Structures
+
+
+### Share root request
+
++ virtual_name: Ubuntu 14.04 (optional) - Directory name that is shown in the filelist. Multiple roots may be added with the same virtual name and they will be merged in filelist. If no virtual name is specified, it will be determined automatically from the path.
++ incoming: true (boolean, optional) - Set this root as incoming that can be configured to use a different refresh interval.
+    + Default: false
++ profiles: 13, 5314 (array[number], optional) - List of share profiles to use for this root. If no share profile is specified, the default one will be added.
+
+### Share root
+
++ id: 76NLOTOBZVTWXOHIWKCXB27W46ULOI7EAUZUTTI
++ path: /home/airdcpp/share/Linux/Ubuntu 14.04/ - Local directory path
++ virtual_name: Ubuntu 14.04 - Name to show in filelist
++ incoming: true (boolean) - Incoming roots can be configured to use a different refresh interval.
+    + Default: false
++ profiles (array[Share profile basic])  - List of share profiles configured for this root.
++ type (Folder type)
++ size: 62523525626 (number) - Size in bytes
++ last_refresh_time: 1483611458 (number) - Time of last refresh
++ status
+    + id (enum[string])
+        + normal
+        + refresh_pending
+        + refresh_running
+    + str: Normal
+
+
+# Group System
+
+## Methods [/system]
+
+### Get away state [GET /system/away]
+
++ Response 200 (application/json)
+    + Attributes (Away state)
+
+### Set manual away state [POST /system/away]
+
++ Request (application/json)
+    + Attributes
+        + away: true (boolean, required)
+
++ Response 200 (application/json)
+    + Attributes (Away state)
+
+
+### Get stats [GET /system/stats]
+
++ Response 200 (application/json)
+    + Attributes
+        + server_threads: 4 (number) - Number of configured web server threads
+        + active_session: 2 (number)
+
+
+### Get system info [GET /system/system_info]
+
+Get generic information about the application and the system it's running on
+
++ Response 200 (application/json)
+    + Attributes (System info)
+
+
+### Restart web server [POST /system/restart_web]
+
+Required permission: *admin*
+
++ Response 204
+
+### Shutdown application [POST /system/shutdown]
+
+Required permission: *admin*
+
++ Response 204
+
+
+## Event listeners [/system/listeners]
+
+### Away state changed [POST /system/listeners/away_state]
+
++ Response 200 (application/json)
+    + Attributes (Away state)
+
+## Data Structures
+
+### Away state
+
++ id (enum[string])
+    + off - Away mode is not enabled
+    + idle - Idle away mode is enabled
+    + manual - Manual away mode is enabled
+
+### System info
+
++ api_version: 1 (number)
++ api_feature_level: 0 (number)
++ cid: 76NLOTOBZVTWXOHIWKCXB27W46ULOI7EAUZUTTI - An unique application identifier
++ hostname: web-demo - System hostname
++ language: fi-FI - Currently selected language
++ path_separator: / - System's native path separator character
++ client_version: `AirDC++w 2.0.0 armv7l` - Full application version string
++ client_started: 1483972366 (number) - Time when the application was started
++ platform: linux (enum[string])
+  + win32
+  + darwin
+  + linux
+  + freebsd
+  + other
+
+
+# Group Transfers
+
+Tranfer API manages download and upload connections. In addition to regular file transfers, filelist and TTH tranfers are listed as well.
+
+Transfer items represent individual transfer connections that may be reused to transfer multiple different files (or file chunks).
+
+## Transfers [/transfers]
+
+### Get transfers [GET]
+
+Required permission: *transfers*
+
++ Response 200 (application/json)
+    + Attributes (array[Transfer item])
+
+
+## Transfer [/transfers/{transfer_id}]
+
+### Get transfer [GET]
+
+Required permission: *transfers*
+
++ Response 200 (application/json)
+    + Attributes (Transfer item)
+
+### Disconnect transfer [POST /transfers/{transfer_id}/disconnect]
+
+Disconnect a running transfer. Note that the transfer connection is often re-established afterwards.
+
+Required permission: *transfers*
+
++ Response 204
+
+### Force connect [POST /transfers/{transfer_id}/force]
+
+Attempt to establish connection instantly. This has no effect for running transfers.
+
+Required permission: *transfers*
+
++ Response 204
+
+
+## Generic methods [/transfers/stats]
+
+### Get transferred bytes [POST /transfers/tranferred_bytes]
+
++ Response 200 (application/json)
+    + Attributes
+        + session_downloaded: 5325235 (number)
+        + session_uploaded 6768544233 (number)
+        + start_total_downloaded: 5543652344 (number)
+        + start_total_uploaded: 6433254263622 (number)
+
+
+## Event listeners [/transfers/listeners]
+
+Required permission: *transfers*
+
+### Transfer added [POST /transfers/listeners/transfer_added]
+
+A new transfer connection was added.
+
++ Response 200 (application/json)
+    + Attributes (Transfer item)
+
+### Transfer updated [POST /transfers/listeners/transfer_updated]
+
+Only the updated properties are sent.
+
+This listener generates a large number of event messages. If you are interested in specific types of updates only, you should generally use the other event listeners listed below.
+
++ Response 200 (application/json)
+    + Attributes (Transfer item)
+
+### Transfer starting [POST /transfers/listeners/transfer_starting]
+
+Transferring of a new file chunk transfer was started.
+
++ Response 200 (application/json)
+    + Attributes (Transfer item)
+
+### Transfer completed [POST /transfers/listeners/transfer_completed]
+
+The current file chunk transfer was completed successfully.
+
++ Response 200 (application/json)
+    + Attributes (Transfer item)
+
+### Transfer failed [POST /transfers/listeners/transfer_failed]
+
+Transfer failed (such as connection was closed or there are no slots available)
+
++ Response 200 (application/json)
+    + Attributes (Transfer item)
+
+### Transfer removed [POST /transfers/listeners/transfer_removed]
+
++ Response 200 (application/json)
+    + Attributes (Transfer item)
+
+### Transfer statistics [POST /transfers/listeners/transfer_statistics]
+
+Only the values that have changed after the last event are sent.
+
++ Response 200 (application/json)
+    + Attributes
+        + speed_down: 0 (number)
+        + speed_up: 754324 (number)
+        + limit_down: 0 (number)
+        + limit_up: 0 (number)
+        + upload_bundles: 1 (number)
+        + download_bundles: 0 (number)
+        + uploads: 2 (number)
+        + downloads: 0 (number)
+        + session_downloaded: 5325235 (number)
+        + session_uploaded 6768544233 (number)
+
+
+## Data Structures
+
+### Transfer item
+
++ id: 83425443
++ name: Ubuntu 14.04.iso - Local file name
++ target: /home/airdcpp/share/Ubuntu/Ubuntu 14.04.iso - Local file path
++ download: true (boolean) - Whether it's a download (false = upload)
++ type (File type) - Content type 'filelist' is also used here
++ size: 625235256 (number) - Segment size in bytes
++ bytes_transferred: 452124 (number)
++ time_started: 1483277168 (number)
++ speed: 524324 (number) - Current transfer speed, bytes per second
++ seconds_left: 632576 (number) - Seconds left based on the current transfer speed
++ encryption (Encryption, nullable)
++ ip (IP)
++ user (Hinted user)
++ status
+    + id (enum[string])
+        + waiting
+        + finished
+        + running
+        + failed
+    + str: `Running (42.3%)`
+    + finished: false (boolean)
++ tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y - File TTH
++ flags (array[Transfer flag])
++ queue_file_id: 743457 (number, nullable) - ID of the queued file (not available for uploads)
+
+### Transfer flag (enum[string])
+
++ M - MCN
++ S - Encryption, trusted certificate
++ U - Encryption, untrusted certificate
++ P - Partial bundle/file sharing
++ T - TTH validation is enabled (downloads only)
++ Z - Compressed file transfer
++ C - Chunked file transfer
+
+
+# Group Users
+
+## Ignores [/users/ignores]
+
+### Get ignored users [GET]
+
+Required permission: *settings_view*
+
++ Response 200 (application/json)
+    + Attributes (array[Ignored user])
+
+
+### Add ignored user [POST /users/ignore/{cid}]
+
+Required permission: *settings_edit*
+
++ Response 204
+
+
+### Remove ignored user [DELETE /users/ignore/{cid}]
+
+Required permission: *settings_edit*
+
++ Response 204
+
+
+## Miscellaneous [/users]
+
+### Get user [GET /users/{cid}]
+
+**Minimum API feature level**: 1 (deprecated method path: /users/user/{cid} will also work with older versions)
+
+Get user by CID.
+
++ Response 200 (application/json)
+    + Attributes (User)
+
+### Search nicks [POST /users/search_nicks]
+
+Search users with nick matching the provided pattern. The most relevant match is returned first.
+
++ Request (application/json)
+    + Attributes
+        + pattern: Share (required)
+        + max_results: 5 (number, required)
+        + hub_urls: adcs://myhub.com:6423, mynmdchub.com (array, optional) - A list of hub URLs where the users will be searched from. Defaults to all connected hubs.
+        + ignore_prefixes: true (boolean, optional) - Ignore nick prefixes (eg. [0.5], [10]) when comparing match relevancies
+            + Default: true
+
++ Response 200 (application/json)
+    + Attributes (array[Hub user])
+
+## Event listeners [/users/listeners]
+
+Subscriptions related to connect state changes are tracked globally on per-user basis and sent users are not bound to any hub. If you want to track hub level user connect state changes, you should use the Hub API listeners instead.
+
+### User connected [POST /users/listeners/user_connected]
+
++ Response 200 (application/json)
+    + Attributes
+        + user (User)
+        + was_offline: true (boolean) - true if the user wasn't online in any hub before this event
+
+### User updated [POST /users/listeners/user_updated]
+
++ Response 200 (application/json)
+    + Attributes (User)
+
+### User disconnected [POST /users/listeners/user_disconnected]
+
++ Response 200 (application/json)
+    + Attributes
+        + user (User)
+        + went_offline: false (boolean) - true if the user isn't online in any hub
+
+### Ignored user added [POST /users/listeners/ignored_user_added]
+
++ Response 200 (application/json)
+    + Attributes (User)
+
+### Ignored user removed [POST /users/listeners/ignored_user_removed]
+
++ Response 200 (application/json)
+    + Attributes (User)
+
+## Data Structures
+
+### Ignored user
+
++ user (User)
++ ignored_messages: 14 (number)
+
+
+# Group Web users
+
+## Web users [/web_users]
+
+### List web users [GET]
+
+Get a list of web users
+
+Required permission: *admin*
+
++ Response 200 (application/json)
+    + Attributes (array[Web user])
+
+### Create web user [POST]
+
+Required permission: *admin*
+
++ Request (application/json)
+    + Attributes
+        + username: user1 (required)
+        + password: userpassword (required)
+        + permissions (array[Web permission], required) - List of permissions assigned for the user. Note: 'admin' permission gives access to all API methods.
+
++ Response 200 (application/json)
+    + Attributes (Web user)
+
+## Web user [/web_users/{user_id}]
+
+### Update web user [PATCH]
+
+Update the specified fields of a web user
+
+Required permission: *admin*
+
++ Request (application/json)
+    + Attributes
+        + password: userpassword
+        + permissions (array[Web permission]) - List of permissions assigned for the user. Note: 'admin' permission gives access to all API methods.
+
++ Response 200 (application/json)
+    + Attributes (Web user)
+
+### Get web user [GET]
+
+Get a single user by ID.
+
+Required permission: *admin*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (Web user)
+
+### Remove web user [DELETE]
+
+Required permission: *admin*
+
++ Response 204
+
+
+## Event listeners [/web_users/listeners]
+
+Required permission: *admin*
+
+### Web user created [POST /web_users/listeners/web_user_added]
+
++ Response 200 (application/json)
+    + Attributes (Web user)
+
+### Web user updated [POST /web_users/listeners/web_user_updated]
+
++ Response 200 (application/json)
+    + Attributes (Web user)
+
+### Web user removed [POST /web_users/listeners/web_user_removed]
+
++ Response 200 (application/json)
+    + Attributes (Web user)
+
+## Data Structures
+
+### Web user
+
++ username: user1
++ permissions (array[Web permission]) - List of permissions assigned for the user. Note: 'admin' permission gives access to all API methods.
++ active_sessions: 1 (number)
++ last_login: 412412456 (number) - Time of the last successful login
+
+### Web permission (enum[string])
+
++ admin - This permission gives access to all API features and not other permissions will be listed
++ download
++ search
++ transfers
++ favorite_hubs_view
++ favorite_hubs_edit
++ events_view
++ events_edit
++ filelists_view
++ filelists_edit
++ filesystem_view
++ filesystem_edit
++ hubs_view
++ hubs_edit
++ hubs_send
++ private_chat_view
++ private_chat_edit
++ private_chat_send
++ queue_edit
++ queue_view
++ settings_view
++ settings_edit
++ view_file_view
++ view_file_edit
+
+
+
+# Group Viewed files
+
+## Fetching file content
+
+All viewed files that have completed downloading can be accessed via HTTP by using the following URL:
+
+`http(s)://<server address>/view/<file id>`
+
+Authentication information is required for accessing the file.
+You may use the regular HTTP authorization header or alternatively add the query *`?auth_token=<authorization>`* after the URL.
+
+Example:
+
+`http://localhost:5600/view/ZMT6DPFKQGNGWO6I5Y6FKRHJJSL73DI5YAFGB6I?auth_token=417886b3-7419-48f1-a541-f308947db011`
+
+Warning:
+
+Due to limitations of the embedded web server, the whole file content will be loaded in memory before uploading. This may cause stability issues
+on systems with low amount of memory. Therefore, it's recommended to use this API for viewing relatively small files.
+
+
+## Viewed files [/view_files]
+
+### Get a list of all viewed file [GET]
+
+Required permission: *view_files_view*
+
++ Response 200 (application/json)
+    + Attributes (array[View file])
+
+### Open file from remote user [POST]
+
+Open a new file from remote user.
+
+Required permission: *view_files_edit*
+
++ Request (application/json)
+    + Attributes
+        + name: Ubuntu 14.04.nfo (required) - File name (title)
+        + size: 9552 (number, required) - Size in bytes
+        + tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y (required) - File TTH
+        + text: false (boolean, optional) - Is the file viewed as text
+            + Default: false
+        + user (Hinted user base, required)
++ Response 200 (application/json)
+    + Attributes (View file)
+
+### Open local file [POST /view_files/{tth}]
+
+Open a file that exists in share.
+
+Required permission: *view_files_edit*
+
++ Parameters
+    + tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y - TTH of the local file (it must be found from the share)
+
++ Request (application/json)
+    + Attributes
+        + text: false (boolean, optional) - Is the file viewed as text
+            + Default: false
++ Response 200 (application/json)
+    + Attributes (View file)
+
+## View file [/view_files/{file_id}]
+
+### Get file [GET]
+
+Required permission: *view_files_view*
+
++ Request (application/json)
+
++ Response 200 (application/json)
+    + Attributes (View file)
+
+### Close file [DELETE]
+
+Required permission: *view_files_edit*
+
++ Response 204
+
+### Set the file as read [POST /view_files/{file_id}/read]
+
+Required permission: *view_files_view*
+
++ Response 204
+
+
+## Event listeners [/view_files/listeners]
+
+Required permission: *view_files_view*
+
+### File added [POST /view_files/listeners/view_file_added]
+
++ Response 200 (application/json)
+
+    + Attributes (View file)
+
+### File updated [POST /view_files/listeners/view_file_updated]
+
+Download state was updated
+
++ Response 200 (application/json)
+
+    + Attributes (View file)
+
+### File finished [POST /view_files/listeners/view_file_finished]
+
+Fired when the file is ready for viewing
+
++ Response 200 (application/json)
+
+    + Attributes (View file)
+
+### File removed [POST /view_files/listeners/view_file_removed]
+
++ Response 200 (application/json)
+    + Attributes (View file)
+
+
+## Data Structures
+
+### View file
+
++ id: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y
++ name: Ubuntu 14.04.nfo
++ size: 9552 (number) - Size in bytes
++ type (File type)
++ tth: CUO74LMZUQMQCBR5UKTIFJPO32LVUH5VZBOL54Y - File TTH
++ text: false (boolean) - Is the file viewed as text
++ time_opened: 1483277168 (number) - Time when the file was opened for viewing
++ read: false (boolean) - Has the file been marked as read
++ download_state (Downloadable item state) - Current download state of the remote user file. Not available for local files.
++ content_ready: true (boolean) - Whether the file content is ready to be viewed
++ mime_type: string;
+
+
+
+
+
+
+## Data Structures
+
+### Grouped path
+
++ name: Videos
++ paths: /home/airdcpp/share/Videos/, /mnt/disk2/share/Videos/ (array[string])
+
+### Search query
+
++ pattern: Ubuntu - Search string. All words must be found from the full file/directory path (partial match)
++ file_type (File content ID)
+    + any
+    + tth
+    + directory
+    + file
++ extensions: iso, img - Allowed file extensions (files only)
++ min_size: 50000000 - Minimum file size (files only)
++ max_size: 100000000 - Maximum file size (files only)
++ excluded: server, iot - List of strings that should not be found from the file/directory path (partial match)
+
+### Download params (object)
+
++ target_name: Ubuntu (required)
++ target_directory: /home/airdcpp/share/ - Destination path where the bundle will be created. If no path is provided, the default download directory will be used.
++ priority (Queue priority ID, optional) - Bundle priority. Auto priority will be used if not specified.
+
+### Downloadable item state
+
++ id (enum[string])
+    + download_failed
+    + download_pending
+    + downloading
+    + loading
+    + downloaded
++ str: `Downloading (45.4%)`
++ time_finished: 0 (number) - Time when the item finished downloading (0 = not finished)
+
+### Encryption
+
++ str: `TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256` - TLS version and cipher
++ trusted: false (boolean) - Indicates whether there's a matching keyprint set for the hub
+
+### Dupe
+
++ id (enum[string])
+    + share_partial
+    + share_full
+    + queue_partial - Bundle item that has not finished downloading yet
+    + queue_full
+    + finished_partial - Bundle item that has finished downloading
+    + finished_full
+    + share_queue
++ paths: /home/airdcpp/share/dir/, /mnt/disk2/dir/ - An array of local paths for this item
+
+### Priority ID (enum[number])
+
++ 2 - Lowest
++ 3 - Low
++ 4 - Normal
++ 5 - High
++ 6 - Highest
+
+### Queue priority ID (enum[number])
+
++ `-1` - Default
++ 0 - Paused (forced)
++ 1 - Paused
++ 2 - Lowest
++ 3 - Low
++ 4 - Normal
++ 5 - High
++ 6 - Highest
+
+### File item type (enum)
+
++ (Folder type)
++ (File type)
+
+### Filesystem item type (enum)
+
++ (Folder type)
++ (File type)
++ (Drive type)
+
+### File type
+
++ id: file
++ str: iso
++ content_type (File content ID)
+    + other
+
+### Drive type
+
++ id (enum[string])
+    + removable - Removable device
+    + drive_fixed - Local drive
+    + drive_remote - Network drive
+
+### File content ID (enum[string])
+
++ audio
++ compressed
++ document
++ executable
++ picture
++ video
++ filelist
++ other
+
+### Folder type
+
++ id: directory
++ str: `2 folders, 49 files`
++ files: 49 (number)
++ directories: 2 (number)
+
+### Filesystem item
+
++ name: myfile1.log
++ type (Filesystem item type) - Directory content information is not available here
++ size: 6382343 (number) - Size in bytes (available for files only)
+
+
+### Chat message info
+
++ total: 100 (number)
++ unread (Unread chat info)
+
+### Log message info
+
++ total: 100 (number)
++ unread (Unread log info)
+
+### Unread chat info
+
++ user: 2 (number) - Number of unread user messages
++ bot: 12 (number) - Number of unread bot messages
++ status: 0 (number) - Number of unread status messages
+
+### Unread log info
+
++ info: 6 (number)
++ warning: 3 (number)
++ error: 1 (number)
+
+### Chat message request
+
++ text: Hello there (required)
++ third_person: false (boolean, optional) - Indicate that the message was sent as third person (/me)
+    + Default: false
+
+### Status message request
+
++ text: `[10]APITester: ISO file(s) over 500 MB in share (/Ubuntu/Ubuntu 14.04.iso)` (required)
++ severity: info (Severity)
+
+### Chat message
+
++ id: 1 (number)
++ time: 1483277168 (number)
++ text: Hello there
++ third_person: false (boolean)  - Indicate that the message was sent as third person (/me)
++ is_read: false (boolean)
++ from (Hub user) - Sender of the message
++ reply_to (Hub user, optional) - User to who the reply is being send to. This may differ from the the sender if the message was received from a bot/chatroom. This field is generally not available with hub messages.
++ to (Hub user, optional) - Receiver of the message. This is generally your own user unless the message was received from a bot/chatroom. This field is generally not available with hub messages.
+    + nick: Developer
+    + cid: 76NLOTOBZVTWXOHIWKCXB27W46ULOI7EAUZUTTI
+    + description: Just writing scripts
+
+### Status message
+
++ id: 2 (number)
++ time: 1483277168 (number)
++ text: `Connecting to adcs://myhub.com:6423 ...`
++ severity: info (Severity)
++ is_read: false (boolean)
+
+### Severity (enum[string])
+
++ notify - Notify events are not stored by the application (they are generally real-time notifications related to a recent activity)
++ info
++ warning
++ error
+
+
+
+### User
+
++ cid: NJSHVYR4ZHCZFUEZNGA7M2D72S5AB4WQAMPBKFA
++ nicks: `[Developer, [100]Developer]`
++ hub_names: `[Demo hub, Dev hub]`
++ hub_urls: adcs://myhub.com:6423, adc://devhub.com:1234
++ flags (array[User flag])
+
+### Hinted user base
+
++ cid: NJSHVYR4ZHCZFUEZNGA7M2D72S5AB4WQAMPBKFA
++ hub_url: adcs://myhub.com:6423 - URL of the hinted hub
+
+### Hinted user (Hinted user base)
+
++ nicks: `Developer ([100]Developer)` - Nick in the hinted hub is shown first and possible other nicks are inside parentheses
++ hub_names: `Demo hub (Dev hub)` - Name of the hinted hub is shown first and possible other hub names are inside parentheses
++ flags (array[Hub user flag]) - Flags in the hinted hub. All flags are not displayed if the user is offline.
+
+### Hub user (Hinted user base)
+
++ hub_name: Demo hub
++ flags (array[Hub user flag])
++ ip4 (object) - IPv4 address
+    + country_id: NL - Netherlands
+    + ip: 89.255.248.35
+    + str: NL - Netherlands (89.255.248.35)
++ ip6 (IP) - IPv6 address
++ nick: Share
++ email: ""
++ share_size: 728128900 (number) - Share size (bytes)
++ upload_speed: 12500000 (number) - Upload speed (bytes/second)
++ download_speed: 12500000 (number) - Download speed (bytes/second, ADC users only)
++ file_count: 29 (number) - Total number of files shared by the user (ADC users only)
++ description: Demo share
++ tag: `<AirDC++w 1.3.1-44-g616c,M:P-,H:0/0/1,S:19>`
+
+### IP
+
++ country: NL - Netherlands
++ ip: 2a00:1a48:1261::168
++ str: NL - Netherlands (2a00:1a48:1261::168)
+
+### User flag (enum[string])
+
++ self - The user is me
++ bot - The user is a bot (ADC users only)
++ asch - The user supports [advanced searching extension](http://adc.sourceforge.net/ADC-EXT.html#_asch_extended_searching_capability) (ADC users only)
++ ccpm - The user supports [encrypted client-to-client private messaging](https://forum.dcbase.org/viewtopic.php?f=55&t=724) (ADC users only)
++ ignored - Messages from this user are ignored
++ favorite - The user has been marked as favorite
++ nmdc - NMDC user
++ offline - The user is offline
+
+### Hub user flag (User flag)
+
++ away - The user has away mode enabled
++ op - The user is an operator
++ hidden - The user is not visible in userlist
++ noconnect - It's not possible to establish transfer/CCPM connections to this user
++ passive - The user has passive connectivity mode configured
